@@ -1,10 +1,34 @@
-import { pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
+import {
+  timestamp,
+  pgTable,
+  text,
+  serial,
+  varchar,
+  index,
+} from "drizzle-orm/pg-core";
 
-export const AiResult = pgTable("aiResult", {
+export const AiResult = pgTable(
+  "aiResult",
+  {
+    id: serial("id").primaryKey(),
+    formData: varchar("formData", { length: 255 }).notNull(),
+    aiResponse: text("aiResponse"),
+    slug: varchar("slug", { length: 255 }).notNull(),
+    createdBy: varchar("createdBy", { length: 255 }).notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  (table) => {
+    return {
+      slugIdx: index("slug_idx").on(table.slug),
+    };
+  }
+);
+
+export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  formData: varchar("formData").notNull(),
-  aiResponse: text("aiResponse"),
-  slug: varchar("slug").notNull(),
-  createdBy: varchar("createdBy").notNull(),
-  createdAt: varchar("createdAt").notNull(),
+  name: text("name"),
+  email: text("email").notNull(),
+  emailVerified: timestamp("emailVerified", { mode: "date" }),
+  image: text("image"),
+  hashedPassword: text("hashedPassword"),
 });

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Merienda } from "next/font/google";
 import "./globals.css";
+import ToastProvider from "@/providers/ToastProvider";
+import { SessionProvider } from "@/providers/SessionProvider";
 
 const font = Merienda({
   subsets: ["latin"],
@@ -18,7 +20,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={font.className}>{children}</body>
+      <body className={font.className}>
+        <ToastProvider />
+        <SessionProvider>{children}</SessionProvider>
+      </body>
     </html>
   );
 }
