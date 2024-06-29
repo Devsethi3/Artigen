@@ -4,7 +4,7 @@ import { FaSearch } from "react-icons/fa";
 
 const SearchSection = () => {
   return (
-    <div className="h-[30vh] flex items-center flex-col w-full gap-6 justify-center text-white bg-indigo-600">
+    <div className="h-[30vh] flex items-center flex-col w-full gap-6 justify-center text-white bg-gradient-to-br from-emerald-900 to-slate-900">
       <div>
         <h2 className="text-3xl font-bold">Browse All Templates</h2>
         <p>What would you like to create today ?</p>
