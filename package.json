@@ -9,11 +9,13 @@
     "lint": "next lint",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "pull": "drizzle-kit introspect:pg ",
+    "pull": "drizzle-kit introspect:pg",
     "generate": "drizzle-kit generate:pg",
     "drop": "drizzle-kit drop",
     "check": "drizzle-kit check:pg",
-    "up": "drizzle-kit up:pg"
+    "up": "drizzle-kit up:pg",
+    "db:generate": "npx drizzle-kit generate:pg",
+    "db:push:pg": "npx drizzle-kit push:pg"
   },
   "dependencies": {
     "@google/generative-ai": "^0.14.0",
