@@ -3,6 +3,7 @@ import { Merienda } from "next/font/google";
 import "./globals.css";
 import ToastProvider from "@/providers/ToastProvider";
 import { SessionProvider } from "@/providers/SessionProvider";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const font = Merienda({
   subsets: ["latin"],
@@ -19,11 +20,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={font.className}>
-        <ToastProvider />
-        <SessionProvider>{children}</SessionProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={font.className}>
+          <ToastProvider />
+          <SessionProvider>{children}</SessionProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

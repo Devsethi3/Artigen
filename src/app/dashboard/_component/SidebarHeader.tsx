@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -37,8 +39,17 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { UserButton } from "@clerk/nextjs";
 
 const SidebarHeader = () => {
+  const userButtonAppearance = {
+    elements: {
+      userButtonAvatarBox: "w-10 h-10", // Custom width and height
+      userButtonPopoverCard: "bg-blue-100", // Custom background for the popover card
+      userButtonPopoverActionButton: "text-red-600", // Custom text color for action buttons
+    },
+  };
+
   return (
     <div className="">
       <header className="flex h-14 lg:h-[80px] items-center gap-4 border-b bg-muted/40 wrapper">
@@ -107,7 +118,8 @@ const SidebarHeader = () => {
           <h1 className="font-semibold text-lg">Dashboard</h1>
         </div>
         <div className="flex items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-          <DropdownMenu>
+          <UserButton afterSignOutUrl="/" appearance={userButtonAppearance} />
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="rounded-full" size="icon">DE</Button>
             </DropdownMenuTrigger>
@@ -177,7 +189,7 @@ const SidebarHeader = () => {
                 <span>GitHub</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
         </div>
       </header>
     </div>

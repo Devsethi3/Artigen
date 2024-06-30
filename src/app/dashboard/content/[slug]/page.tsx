@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { chatSession } from "@/model/aiModel";
 import { db } from "@/lib/db";
 import { AiResult } from "@/lib/schema";
+import { useUser } from "@clerk/nextjs";
 
 interface CreatePageProps {
   params: {
@@ -21,6 +22,7 @@ interface CreatePageProps {
 const CreatePage = ({ params }: CreatePageProps) => {
   const [loading, setLoading] = useState(false);
   const [aiResult, setAiResult] = useState<string>("");
+  const { user } = useUser();
 
   const selectedTemplate: TEMPLATE | undefined = templates.find(
     (item) => item.slug === params.slug
@@ -42,7 +44,11 @@ const CreatePage = ({ params }: CreatePageProps) => {
       setAiResult(responseText);
 
       // Saving Data in DB
-      await saveInDatabase(formData, selectedPrompt?.slug);
+      await saveInDatabase(
+        formData,
+        selectedTemplate?.slug || "",
+        responseText
+      );
     } catch (error) {
       console.error("Error generating AI content:", error);
       setAiResult(
@@ -53,13 +59,20 @@ const CreatePage = ({ params }: CreatePageProps) => {
     }
   };
 
-  const saveInDatabase = async (formData: any, slug: any) => {
+  const saveInDatabase = async (
+    formData: Record<string, string>,
+    slug: string,
+    aiResult: string
+  ) => {
     const result = await db.insert(AiResult).values({
-      formData: formData,
+      formData: JSON.stringify(formData),
       slug: slug,
       aiResponse: aiResult,
-      // createdBy: user,
+      createdBy: user?.primaryEmailAddress?.emailAddress || "",
+      createdAt: new Date(),
     });
+
+    console.log(result);
   };
 
   return (
