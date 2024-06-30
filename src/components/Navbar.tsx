@@ -13,7 +13,7 @@ const Navbar = () => {
             </span>
           </Link>
 
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-12">
             <NavLink href="/pricing">Pricing</NavLink>
             <NavLink href="/chatbot">ChatBot</NavLink>
             <NavLink href="/usage">Usage</NavLink>

@@ -6,10 +6,10 @@ const HeroSection = () => {
       <div className="max-w-5xl w-full">
         <div className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-emerald-300 to-blue-400 text-transparent bg-clip-text">
-            Embrace the Green Revolution
+            Embrace the AI Creation
           </h1>
           <p className="text-xl sm:text-2xl mb-8 text-emerald-100">
-            Innovating for a sustainable future
+            Innovating for a creative future
           </p>
           <button className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
             Get Started

@@ -13,6 +13,14 @@
   width: 70px;
   height: 70px;
 }
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* 
 body {
   background: linear-gradient(to bottom right, #064e3b, #0f172a);
