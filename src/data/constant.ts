@@ -1,0 +1,1 @@
+export const MAXIMUM_PLAN_USAGE_VALUE = 10000;

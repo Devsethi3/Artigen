@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { AiResult } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { useTotalUsage } from "@/context/TotalUsageContext";
+import { MAXIMUM_PLAN_USAGE_VALUE } from "@/data/constant";
 
 interface AiResultData {
   id: number;
@@ -20,7 +21,7 @@ interface AiResultData {
 const PlanUsage: React.FC = () => {
   const { user } = useUser();
   const { totalUsage, setTotalUsage } = useTotalUsage();
-  const maxCredits = 10000;
+  const maxCredits = MAXIMUM_PLAN_USAGE_VALUE;
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;

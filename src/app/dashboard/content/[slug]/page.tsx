@@ -14,6 +14,7 @@ import { AiResult } from "@/lib/schema";
 import { useUser } from "@clerk/nextjs";
 import { useTotalUsage } from "@/context/TotalUsageContext";
 import toast from "react-hot-toast";
+import { MAXIMUM_PLAN_USAGE_VALUE } from "@/data/constant";
 
 interface CreatePageProps {
   params: {
@@ -32,7 +33,7 @@ const CreatePage = ({ params }: CreatePageProps) => {
   );
 
   const generateAIContent = async (formData: Record<string, string>) => {
-    if (totalUsage >= 10000) {
+    if (totalUsage >= MAXIMUM_PLAN_USAGE_VALUE) {
       toast((t: any) => (
         <div className="flex items-center">
           <div className="flex-grow">
