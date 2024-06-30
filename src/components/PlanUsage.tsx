@@ -6,6 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import { db } from "@/lib/db";
 import { AiResult } from "@/lib/schema";
 import { eq } from "drizzle-orm";
+import { useTotalUsage } from "@/context/TotalUsageContext";
 
 interface AiResultData {
   id: number;
@@ -18,20 +19,34 @@ interface AiResultData {
 
 const PlanUsage: React.FC = () => {
   const { user } = useUser();
-  const [totalUsage, setTotalUsage] = useState<number>(0);
+  const { totalUsage, setTotalUsage } = useTotalUsage();
   const maxCredits = 10000;
 
   useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
     if (user) {
-      getData();
+      const fetchData = async () => {
+        await getData();
+      };
+
+      fetchData();
+
+      // Poll for updates every 10 seconds
+      intervalId = setInterval(fetchData, 10000);
     }
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
   }, [user]);
 
   const getData = async () => {
     try {
+      // @ts-ignore
       const results: AiResultData[] = await db
         .select()
         .from(AiResult)
+        // @ts-expect-error
         .where(eq(AiResult.createdBy, user?.primaryEmailAddress?.emailAddress));
 
       const total = getTotalUsage(results);

@@ -12,6 +12,8 @@ import { chatSession } from "@/model/aiModel";
 import { db } from "@/lib/db";
 import { AiResult } from "@/lib/schema";
 import { useUser } from "@clerk/nextjs";
+import { useTotalUsage } from "@/context/TotalUsageContext";
+import toast from "react-hot-toast";
 
 interface CreatePageProps {
   params: {
@@ -22,6 +24,7 @@ interface CreatePageProps {
 const CreatePage = ({ params }: CreatePageProps) => {
   const [loading, setLoading] = useState(false);
   const [aiResult, setAiResult] = useState<string>("");
+  const { totalUsage, setTotalUsage } = useTotalUsage();
   const { user } = useUser();
 
   const selectedTemplate: TEMPLATE | undefined = templates.find(
@@ -29,6 +32,24 @@ const CreatePage = ({ params }: CreatePageProps) => {
   );
 
   const generateAIContent = async (formData: Record<string, string>) => {
+    if (totalUsage >= 10000) {
+      toast((t: any) => (
+        <div className="flex items-center">
+          <div className="flex-grow">
+            <p className="font-bold">Upgrade to Premium</p>
+            <p>You have reached your usage limit.</p>
+          </div>
+          <button
+            className="ml-4 bg-red-500 text-white px-3 py-1 rounded"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            Dismiss
+          </button>
+        </div>
+      ));
+      return;
+    }
+
     setLoading(true);
     setAiResult("");
 
@@ -49,6 +70,9 @@ const CreatePage = ({ params }: CreatePageProps) => {
         selectedTemplate?.slug || "",
         responseText
       );
+
+      // Update total usage
+      setTotalUsage((prev: any) => prev + responseText.length);
     } catch (error) {
       console.error("Error generating AI content:", error);
       setAiResult(
@@ -64,15 +88,13 @@ const CreatePage = ({ params }: CreatePageProps) => {
     slug: string,
     aiResult: string
   ) => {
-    const result = await db.insert(AiResult).values({
+    await db.insert(AiResult).values({
       formData: JSON.stringify(formData),
       slug: slug,
       aiResponse: aiResult,
       createdBy: user?.primaryEmailAddress?.emailAddress || "",
       createdAt: new Date(),
     });
-
-    console.log(result);
   };
 
   return (
