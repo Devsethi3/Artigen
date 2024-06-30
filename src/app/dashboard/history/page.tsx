@@ -7,6 +7,25 @@ import { db } from "@/lib/db";
 import { desc, eq } from "drizzle-orm";
 import { Button } from "@/components/ui/button";
 import { RiDeleteBin5Fill } from "react-icons/ri";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { TbCopy, TbCheck } from "react-icons/tb";
+import toast from "react-hot-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface AiResultData {
   id: number;
@@ -20,6 +39,7 @@ interface AiResultData {
 const HistoryPage: React.FC = () => {
   const [data, setData] = useState<AiResultData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [copiedRowId, setCopiedRowId] = useState<number | null>(null);
 
   const fetchData = async () => {
     try {
@@ -45,9 +65,14 @@ const HistoryPage: React.FC = () => {
     fetchData();
   }, []);
 
-  const copyToClipboard = (text: string) => {
+  const copyToClipboard = (text: string, id: number) => {
     navigator.clipboard
       .writeText(text)
+      .then(() => {
+        setCopiedRowId(id);
+        setTimeout(() => setCopiedRowId(null), 1000);
+        toast.success("Copied successfully!");
+      })
       .catch((err) => console.error("Failed to copy:", err));
   };
 
@@ -80,7 +105,8 @@ const HistoryPage: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-6">History</h1>
+      <h1 className="text-2xl font-bold">History</h1>
+      <p className="mb-6 text-muted-foreground">Get your previously generated AI Results</p>
       <div className="overflow-x-auto shadow-md border rounded-lg">
         <table className="min-w-full bg-white border-collapse">
           <thead className="bg-gray-50">
@@ -106,6 +132,15 @@ const HistoryPage: React.FC = () => {
                 <SkeletonRow />
                 <SkeletonRow />
               </>
+            ) : data.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={4}
+                  className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500"
+                >
+                  No history available.
+                </td>
+              </tr>
             ) : (
               data.map((row) => (
                 <tr key={row.id} className="">
@@ -119,16 +154,55 @@ const HistoryPage: React.FC = () => {
                     {row.createdAt}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button
-                      onClick={() => copyToClipboard(row.aiResponse || "")}
-                      className="text-blue-600 hover:text-blue-900 transition duration-150 ease-in-out mr-8"
-                    >
-                      Copy
-                    </button>
-                    <Button variant="destructive" size="icon">
-                      <RiDeleteBin5Fill className="" />
-                      {/* Delete */}
-                    </Button>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            onClick={() =>
+                              copyToClipboard(row.aiResponse || "", row.id)
+                            }
+                            className="bg-indigo-100 text-indigo-600 transition p-2 rounded-md duration-150 ease-in-out mr-8"
+                          >
+                            {copiedRowId === row.id ? (
+                              <TbCheck size={18} />
+                            ) : (
+                              <TbCopy size={18} />
+                            )}
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Copy to Clipboard</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <button className="bg-red-100 p-2 rounded-md text-red-600 transition duration-150 ease-in-out">
+                          <RiDeleteBin5Fill size={18} className="" />
+                        </button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you absolutely sure?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            delete your data.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <Button
+                            variant="destructive"
+                            onClick={() => deleteRow(row.id)}
+                          >
+                            Delete
+                          </Button>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </td>
                 </tr>
               ))

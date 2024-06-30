@@ -8,7 +8,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="grid min-h-screen w-full overflow-hidden lg:grid-cols-[280px_1fr]">
+    <div className="grid min-h-screen w-full overflow-hidden lg:grid-cols-[260px_1fr]">
       <Sidebar />
       <div className="flex flex-col">
         <SidebarHeader />

@@ -1,5 +1,6 @@
 "use client";
 
+import PlanUsage from "@/components/PlanUsage";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect } from "react";
@@ -40,8 +41,8 @@ const Sidebar = () => {
   const path = usePathname();
 
   return (
-    <div>
-      <div className="hidden h-full border-r wrapper bg-muted/40 lg:block">
+    <div className="w-[256px]">
+      <div className="hidden fixed h-full border-r w-[260px] wrapper lg:block">
         <div className="flex flex-col gap-2">
           <div className="flex border-b h-[80px] w-full items-center px-4">
             <Link
@@ -79,6 +80,9 @@ const Sidebar = () => {
               })}
             </nav>
           </div>
+        </div>
+        <div className="absolute bottom-10 w-full left-0 wrapper">
+          <PlanUsage />
         </div>
       </div>
     </div>
