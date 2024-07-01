@@ -8,6 +8,7 @@ import { AiResult } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { useTotalUsage } from "@/context/TotalUsageContext";
 import { MAXIMUM_PLAN_USAGE_VALUE } from "@/data/constant";
+import Link from "next/link";
 
 interface AiResultData {
   id: number;
@@ -81,12 +82,14 @@ const PlanUsage: React.FC = () => {
           {totalUsage.toLocaleString()}/{maxCredits.toLocaleString()} credits
           used
         </p>
-        <Button
-          variant="secondary"
-          className="w-full my-3 text-[#093C36] font-bold"
-        >
-          Upgrade
-        </Button>
+        <Link href="/dashboard/pricing">
+          <Button
+            variant="secondary"
+            className="w-full my-3 text-[#093C36] font-bold"
+          >
+            Upgrade
+          </Button>
+        </Link>
       </div>
     </div>
   );

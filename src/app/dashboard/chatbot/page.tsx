@@ -250,7 +250,7 @@ const ChatBotPage: React.FC = () => {
                 className={`px-3 py-2 max-w-[65%] ${
                   msg.isUser
                     ? "bg-primary text-white rounded-b-lg rounded-tl-lg"
-                    : "bg-secondary text-black rounded-b-lg rounded-tr-lg"
+                    : "bg-secondary text-gray-800 rounded-b-lg rounded-tr-lg"
                 }`}
               >
                 {msg.isLoading ? (
