@@ -9,6 +9,7 @@ import { FaHistory, FaHome } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import { SiChatbot } from "react-icons/si";
 import { MdOutlinePayment } from "react-icons/md";
+import Image from "next/image";
 
 const Sidebar = () => {
   const MenuList = [
@@ -44,12 +45,11 @@ const Sidebar = () => {
       <div className="hidden fixed h-full border-r w-[260px] wrapper lg:block">
         <div className="flex flex-col gap-2">
           <div className="flex border-b h-[80px] w-full items-center px-4">
-            <Link
-              href="#"
-              className="flex items-center gap-2 font-semibold"
-              prefetch={false}
-            >
-              <span className="">ArtiGen</span>
+            <Link href="/" className="flex items-center gap-3">
+            <Image src="/logo.png" width={40} height={40} alt="logo" className="rounded-full" />
+              <span className="text-2xl font-bold bg-gradient-to-r from-emerald-300 to-blue-400 text-transparent bg-clip-text">
+                ArtiGen
+              </span>
             </Link>
           </div>
           <div className="flex-1">

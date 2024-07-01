@@ -8,7 +8,7 @@ import React, {
   useRef,
 } from "react";
 import { AiOutlineSend } from "react-icons/ai";
-import { FiCopy, FiLoader } from "react-icons/fi";
+import { FiCopy } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { chatSession } from "@/model/aiModel";
 import { db } from "@/lib/db";
@@ -24,10 +24,13 @@ import rehypeRaw from "rehype-raw";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { desc, eq, and, asc } from "drizzle-orm";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface Message {
   text: string;
   isUser: boolean;
+  isLoading?: boolean;
 }
 
 const ChatBotPage: React.FC = () => {
@@ -35,6 +38,7 @@ const ChatBotPage: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const { totalUsage, setTotalUsage } = useTotalUsage();
   const { user } = useUser();
+  const router = useRouter();
   const [streaming, setStreaming] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -91,7 +95,7 @@ const ChatBotPage: React.FC = () => {
     setMessages((prevMessages) => [
       ...prevMessages,
       userMessage,
-      { text: "", isUser: false },
+      { text: "", isUser: false, isLoading: true },
     ]);
     generateAIContent({ input });
     setInput("");
@@ -115,12 +119,9 @@ const ChatBotPage: React.FC = () => {
             <p className="font-bold">Upgrade to Premium</p>
             <p>You have reached your usage limit.</p>
           </div>
-          <button
-            className="ml-4 bg-red-500 text-white px-3 py-1 rounded"
-            onClick={() => toast.dismiss(t.id)}
-          >
-            Dismiss
-          </button>
+          <Button size="sm" onClick={() => router.push("/dashboard/pricing")}>
+            Get Premium
+          </Button>
         </div>
       ));
       return;
@@ -134,7 +135,11 @@ const ChatBotPage: React.FC = () => {
       const responseText = await result.response.text();
 
       const aiMessage: Message = { text: responseText, isUser: false };
-      setMessages((prevMessages) => [...prevMessages, aiMessage]);
+      setMessages((prevMessages) =>
+        prevMessages.map((msg, index) =>
+          index === prevMessages.length - 1 ? aiMessage : msg
+        )
+      );
 
       await saveInDatabase(formData, responseText);
 
@@ -145,7 +150,11 @@ const ChatBotPage: React.FC = () => {
         text: "An error occurred while generating content. Please try again.",
         isUser: false,
       };
-      setMessages((prevMessages) => [...prevMessages, errorMessage]);
+      setMessages((prevMessages) =>
+        prevMessages.map((msg, index) =>
+          index === prevMessages.length - 1 ? errorMessage : msg
+        )
+      );
     } finally {
       setStreaming(false);
     }
@@ -202,54 +211,97 @@ const ChatBotPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-[89vh] bg-gray-100 p-4">
-      <div className="flex-grow overflow-y-auto bg-white shadow-md rounded-lg p-4 max-w-4xl mb-4">
-        {messages.reverse().map((msg, index) => (
-          <div
-            key={index}
-            className={`flex ${
-              msg.isUser ? "justify-end" : "justify-start"
-            } mb-2`}
-          >
-            <div
-              className={`${
-                msg.isUser
-                  ? "bg-primary px-3 py-2 max-w-[70%]  text-white rounded-b-lg rounded-tl-lg"
-                  : "bg-secondary px-3 py-2 max-w-[70%]  text-black rounded-b-lg rounded-tr-lg"
-              }`}
-            >
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw]}
-                components={{
-                  code({ node, inline, className, children, ...props }) {
-                    const match = /language-(\w+)/.exec(className || "");
-                    return !inline && match ? (
-                      <CodeBlock
-                        language={match[1]}
-                        value={String(children).replace(/\n$/, "")}
-                      />
-                    ) : (
-                      <code className={className} {...props}>
-                        {children}
-                      </code>
-                    );
-                  },
-                }}
-              >
-                {msg.text}
-              </ReactMarkdown>
+    <div className="flex flex-col h-[89vh] bg-gray-100 lg:p-4 p-0">
+      {/* Chat history and empty state */}
+      <div className="flex-grow overflow-y-auto bg-white lg:shadow-md lg:rounded-lg lg:p-4 p-1 w-full mb-4">
+        {messages.length === 0 ? (
+          <div className="w-full h-full flex items-center justify-center flex-col">
+            <Image
+              src="/empty-chat.svg"
+              width={200}
+              height={200}
+              alt="empty-chat"
+            />
+            <div className="text-center text-gray-500 py-4">
+              Start a conversation by typing a message.
             </div>
           </div>
-        ))}
-        {streaming && (
-          <div className="flex justify-center items-center">
-            <FiLoader className="animate-spin" size={24} />
-          </div>
+        ) : (
+          messages.reverse().map((msg, index) => (
+            <div
+              key={index}
+              className={`flex items-end ${
+                msg.isUser ? "justify-end" : "justify-start"
+              } mb-2`}
+            >
+              {/* Display AI avatar for non-user messages */}
+              {!msg.isUser && (
+                <div className="flex-shrink-0 mr-2">
+                  <Image
+                    src="/logo.png" // Example AI avatar image path
+                    alt="AI Avatar"
+                    width={40}
+                    height={40}
+                    className="rounded-full"
+                  />
+                </div>
+              )}
+              <div
+                className={`px-3 py-2 max-w-[65%] ${
+                  msg.isUser
+                    ? "bg-primary text-white rounded-b-lg rounded-tl-lg"
+                    : "bg-secondary text-black rounded-b-lg rounded-tr-lg"
+                }`}
+              >
+                {msg.isLoading ? (
+                  <div className="skeleton-loader lg:w-64 w-40 h-6">
+                    <div className="bg-white animate-pulse w-full h-full p-2 rounded-lg"></div>
+                  </div>
+                ) : (
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    rehypePlugins={[rehypeRaw]}
+                    components={{
+                      // @ts-ignore
+                      code({ node, inline, className, children, ...props }) {
+                        const match = /language-(\w+)/.exec(className || "");
+                        return !inline && match ? (
+                          <CodeBlock
+                            language={match[1]}
+                            value={String(children).replace(/\n$/, "")}
+                          />
+                        ) : (
+                          <code className={className} {...props}>
+                            {children}
+                          </code>
+                        );
+                      },
+                    }}
+                  >
+                    {msg.text}
+                  </ReactMarkdown>
+                )}
+              </div>
+              {/* Display user avatar for user messages */}
+              {msg.isUser && user && (
+                <div className="flex-shrink-0 ml-2">
+                  <Image
+                    src={user.imageUrl || ""}
+                    alt="User Avatar"
+                    width={40}
+                    height={40}
+                    className="rounded-full"
+                  />
+                </div>
+              )}
+            </div>
+          ))
         )}
         <div ref={messagesEndRef} />
       </div>
-      <div className="flex items-center">
+
+      {/* Input area */}
+      <div className="flex items-center gap-4 mx-4">
         <Input
           type="text"
           placeholder="Type your message..."
@@ -260,7 +312,8 @@ const ChatBotPage: React.FC = () => {
           disabled={streaming}
         />
         <Button onClick={handleSend} disabled={streaming}>
-          <AiOutlineSend size={24} />
+          Send
+          <AiOutlineSend className="ml-2" />
         </Button>
       </div>
     </div>
