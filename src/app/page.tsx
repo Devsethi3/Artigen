@@ -1,5 +1,6 @@
 import HeroSection from "@/components/HeroSection";
 import Navbar from "@/components/Navbar";
+import PricingCards from "@/components/PricingCards";
 import React from "react";
 
 const HomePage = () => {
@@ -7,6 +8,9 @@ const HomePage = () => {
     <div>
       <Navbar />
       <HeroSection />
+      <div className="wrapper my-5">
+        <PricingCards />
+      </div>
     </div>
   );
 };

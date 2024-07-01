@@ -1,7 +1,14 @@
 "use client";
 
-import React, { useState, useEffect, KeyboardEvent, ChangeEvent } from "react";
+import React, {
+  useState,
+  useEffect,
+  KeyboardEvent,
+  ChangeEvent,
+  useRef,
+} from "react";
 import { AiOutlineSend } from "react-icons/ai";
+import { FiCopy, FiLoader } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { chatSession } from "@/model/aiModel";
 import { db } from "@/lib/db";
@@ -11,12 +18,12 @@ import { useTotalUsage } from "@/context/TotalUsageContext";
 import { MAXIMUM_PLAN_USAGE_VALUE } from "@/data/constant";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { RiLoader2Fill } from "react-icons/ri";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
-import { desc, eq } from "drizzle-orm";
-import { format } from "date-fns";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { desc, eq, and, asc } from "drizzle-orm";
 
 interface Message {
   text: string;
@@ -28,11 +35,20 @@ const ChatBotPage: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const { totalUsage, setTotalUsage } = useTotalUsage();
   const { user } = useUser();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [streaming, setStreaming] = useState<boolean>(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchChatHistory();
   }, [user]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, streaming]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const fetchChatHistory = async () => {
     if (!user?.primaryEmailAddress?.emailAddress) return;
@@ -41,16 +57,25 @@ const ChatBotPage: React.FC = () => {
       const results = await db
         .select()
         .from(AiResult)
-        .where(eq(AiResult.slug, "chatbot"))
-        .where(eq(AiResult.createdBy, user.primaryEmailAddress.emailAddress))
-        .orderBy(desc(AiResult.createdAt));
+        .where(
+          and(
+            eq(AiResult.slug, "chatbot"),
+            eq(AiResult.createdBy, user.primaryEmailAddress.emailAddress)
+          )
+        )
+        .orderBy(asc(AiResult.createdAt));
 
       const chatHistory: Message[] = results.flatMap((result) => {
-        const formData = JSON.parse(result.formData);
-        return [
-          { text: formData.input, isUser: true },
-          { text: result.aiResponse || "", isUser: false },
-        ];
+        try {
+          const formData = JSON.parse(result.formData as string);
+          return [
+            { text: formData.input as string, isUser: true },
+            { text: result.aiResponse || "", isUser: false },
+          ];
+        } catch (error) {
+          console.error("Error parsing formData:", error);
+          return [];
+        }
       });
 
       setMessages(chatHistory);
@@ -63,7 +88,11 @@ const ChatBotPage: React.FC = () => {
     if (input.trim() === "") return;
 
     const userMessage: Message = { text: input, isUser: true };
-    setMessages((prevMessages) => [...prevMessages, userMessage]);
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      userMessage,
+      { text: "", isUser: false },
+    ]);
     generateAIContent({ input });
     setInput("");
   };
@@ -97,9 +126,8 @@ const ChatBotPage: React.FC = () => {
       return;
     }
 
-    setLoading(true);
-
     try {
+      setStreaming(true);
       const finalAIPrompt = `${JSON.stringify(formData)}`;
 
       const result = await chatSession.sendMessage(finalAIPrompt);
@@ -119,7 +147,7 @@ const ChatBotPage: React.FC = () => {
       };
       setMessages((prevMessages) => [...prevMessages, errorMessage]);
     } finally {
-      setLoading(false);
+      setStreaming(false);
     }
   };
 
@@ -138,10 +166,45 @@ const ChatBotPage: React.FC = () => {
     });
   };
 
+  const CodeBlock = ({
+    language,
+    value,
+  }: {
+    language: string;
+    value: string;
+  }) => {
+    const [copied, setCopied] = useState(false);
+
+    const copyToClipboard = () => {
+      navigator.clipboard.writeText(value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    };
+
+    return (
+      <div className="relative">
+        <button
+          onClick={copyToClipboard}
+          className="absolute top-2 right-2 p-2 bg-gray-800 rounded-md text-white"
+        >
+          <FiCopy />
+        </button>
+        <SyntaxHighlighter language={language} style={vscDarkPlus}>
+          {value}
+        </SyntaxHighlighter>
+        {copied && (
+          <div className="absolute top-2 right-12 bg-green-500 text-white px-2 py-1 rounded-md">
+            Copied!
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col h-[89vh] bg-gray-100 p-4">
-      <div className="flex-grow overflow-y-auto bg-white shadow-md rounded-lg p-4 mb-4">
-        {messages.map((msg, index) => (
+      <div className="flex-grow overflow-y-auto bg-white shadow-md rounded-lg p-4 max-w-4xl mb-4">
+        {messages.reverse().map((msg, index) => (
           <div
             key={index}
             className={`flex ${
@@ -149,27 +212,42 @@ const ChatBotPage: React.FC = () => {
             } mb-2`}
           >
             <div
-              className={`px-3 py-2 ${
+              className={`${
                 msg.isUser
-                  ? "bg-primary text-white rounded-b-lg rounded-tl-lg"
-                  : "bg-secondary text-black rounded-b-lg rounded-tr-lg"
+                  ? "bg-primary px-3 py-2 max-w-[70%]  text-white rounded-b-lg rounded-tl-lg"
+                  : "bg-secondary px-3 py-2 max-w-[70%]  text-black rounded-b-lg rounded-tr-lg"
               }`}
             >
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeRaw]}
-                className="prose"
+                components={{
+                  code({ node, inline, className, children, ...props }) {
+                    const match = /language-(\w+)/.exec(className || "");
+                    return !inline && match ? (
+                      <CodeBlock
+                        language={match[1]}
+                        value={String(children).replace(/\n$/, "")}
+                      />
+                    ) : (
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    );
+                  },
+                }}
               >
                 {msg.text}
               </ReactMarkdown>
             </div>
           </div>
         ))}
-        {loading && (
-          <div className="flex justify-center mb-2">
-            <RiLoader2Fill className="animate-spin h-5 w-5" />
+        {streaming && (
+          <div className="flex justify-center items-center">
+            <FiLoader className="animate-spin" size={24} />
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
       <div className="flex items-center">
         <Input
@@ -179,8 +257,9 @@ const ChatBotPage: React.FC = () => {
           onChange={handleInputChange}
           onKeyPress={handleKeyPress}
           className="flex-grow"
+          disabled={streaming}
         />
-        <Button onClick={handleSend}>
+        <Button onClick={handleSend} disabled={streaming}>
           <AiOutlineSend size={24} />
         </Button>
       </div>

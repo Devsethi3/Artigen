@@ -4,6 +4,7 @@ import "./globals.css";
 import ToastProvider from "@/providers/ToastProvider";
 import { SessionProvider } from "@/providers/SessionProvider";
 import { ClerkProvider } from "@clerk/nextjs";
+import NextTopLoader from "nextjs-toploader";
 
 const font = Merienda({
   subsets: ["latin"],
@@ -23,6 +24,13 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={font.className}>
+          <NextTopLoader
+            color="#10B77F"
+            crawlSpeed={200}
+            height={4}
+            crawl={true}
+            easing="ease"
+          />
           <ToastProvider />
           <SessionProvider>{children}</SessionProvider>
         </body>
