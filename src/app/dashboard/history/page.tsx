@@ -41,12 +41,15 @@ const HistoryPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [copiedRowId, setCopiedRowId] = useState<number | null>(null);
 
+  // To do : format date correctly
+
   const fetchData = async () => {
     try {
       const results = await db
         .select()
         .from(AiResult)
         .orderBy(desc(AiResult.createdAt));
+      console.log(AiResult.createdAt);
 
       const formattedResults = results.map((result) => ({
         ...result,
@@ -106,7 +109,9 @@ const HistoryPage: React.FC = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold">History</h1>
-      <p className="mb-6 text-muted-foreground">Get your previously generated AI Results</p>
+      <p className="mb-6 text-muted-foreground">
+        Get your previously generated AI Results
+      </p>
       <div className="overflow-x-auto shadow-md border rounded-lg">
         <table className="min-w-full bg-white border-collapse">
           <thead className="bg-gray-50">

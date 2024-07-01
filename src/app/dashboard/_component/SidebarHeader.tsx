@@ -52,7 +52,7 @@ const SidebarHeader = () => {
 
   return (
     <div className="">
-      <header className="flex h-14 lg:h-[80px] items-center gap-4 border-b bg-muted/40 wrapper">
+      <header className="flex h-14 lg:h-[80px] items-center gap-4 border-b wrapper">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon" className="lg:hidden">

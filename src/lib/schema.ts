@@ -12,7 +12,7 @@ export const AiResult = pgTable(
   {
     id: serial("id").primaryKey(),
     formData: varchar("formData", { length: 255 }).notNull(),
-    aiResponse: text("aiResponse"),
+    aiResponse: text("aiResponse").notNull(), // Make this not null if it's expected to always have a response
     slug: varchar("slug", { length: 255 }).notNull(),
     createdBy: varchar("createdBy", { length: 255 }).notNull(),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
