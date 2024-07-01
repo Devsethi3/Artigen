@@ -41,15 +41,12 @@ const HistoryPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [copiedRowId, setCopiedRowId] = useState<number | null>(null);
 
-  // To do : format date correctly
-
   const fetchData = async () => {
     try {
       const results = await db
         .select()
         .from(AiResult)
         .orderBy(desc(AiResult.createdAt));
-      console.log(AiResult.createdAt);
 
       const formattedResults = results.map((result) => ({
         ...result,
@@ -90,17 +87,17 @@ const HistoryPage: React.FC = () => {
 
   const SkeletonRow = () => (
     <tr>
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="px-4 py-3 sm:px-6">
         <div className="h-4 bg-gray-200 rounded w-3/4"></div>
       </td>
-      <td className="px-6 py-4">
+      <td className="px-4 py-3 sm:px-6">
         <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
         <div className="h-4 bg-gray-200 rounded w-2/3"></div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="px-4 py-3 sm:px-6">
         <div className="h-4 bg-gray-200 rounded w-1/2"></div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="px-4 py-3 sm:px-6">
         <div className="h-4 bg-gray-200 rounded w-1/4"></div>
       </td>
     </tr>
@@ -116,16 +113,16 @@ const HistoryPage: React.FC = () => {
         <table className="min-w-full bg-white border-collapse">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+              <th className="px-4 py-3 sm:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                 Template
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+              <th className="px-4 py-3 sm:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                 AI Response
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+              <th className="px-4 py-3 sm:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                 Date
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+              <th className="px-4 py-3 sm:px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
                 Actions
               </th>
             </tr>
@@ -141,73 +138,75 @@ const HistoryPage: React.FC = () => {
               <tr>
                 <td
                   colSpan={4}
-                  className="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500"
+                  className="px-4 py-3 sm:px-6 whitespace-nowrap text-center text-sm text-gray-500"
                 >
                   No history available.
                 </td>
               </tr>
             ) : (
               data.map((row) => (
-                <tr key={row.id} className="">
-                  <td className="px-6 py-4 w-1/5 whitespace-nowrap text-sm text-gray-900">
-                    {row.slug}
+                <tr key={row.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 sm:px-6 text-sm text-gray-900">
+                    <div className="font-medium">{row.slug}</div>
                   </td>
-                  <td className="px-6 py-4 text-sm w-1/2 text-gray-500">
-                    <div className="line-clamp-3">{row.aiResponse}</div>
+                  <td className="px-4 py-3 sm:px-6 text-sm text-gray-500">
+                    <div className="line-clamp-2">{row.aiResponse}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-4 py-3 sm:px-6 text-sm text-gray-500">
                     {row.createdAt}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button
-                            onClick={() =>
-                              copyToClipboard(row.aiResponse || "", row.id)
-                            }
-                            className="bg-indigo-100 text-indigo-600 transition p-2 rounded-md duration-150 ease-in-out mr-8"
-                          >
-                            {copiedRowId === row.id ? (
-                              <TbCheck size={18} />
-                            ) : (
-                              <TbCopy size={18} />
-                            )}
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Copy to Clipboard</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                  <td className="px-4 py-3 sm:px-6 text-sm font-medium">
+                    <div className="flex space-x-2">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button
+                              onClick={() =>
+                                copyToClipboard(row.aiResponse || "", row.id)
+                              }
+                              className="bg-indigo-100 text-indigo-600 transition p-2 rounded-md duration-150 ease-in-out"
+                            >
+                              {copiedRowId === row.id ? (
+                                <TbCheck size={18} />
+                              ) : (
+                                <TbCopy size={18} />
+                              )}
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Copy to Clipboard</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
 
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <button className="bg-red-100 p-2 rounded-md text-red-600 transition duration-150 ease-in-out">
-                          <RiDeleteBin5Fill size={18} className="" />
-                        </button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>
-                            Are you absolutely sure?
-                          </AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This action cannot be undone. This will permanently
-                            delete your data.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <Button
-                            variant="destructive"
-                            onClick={() => deleteRow(row.id)}
-                          >
-                            Delete
-                          </Button>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <button className="bg-red-100 p-2 rounded-md text-red-600 transition duration-150 ease-in-out">
+                            <RiDeleteBin5Fill size={18} />
+                          </button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you absolutely sure?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete your data.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <Button
+                              variant="destructive"
+                              onClick={() => deleteRow(row.id)}
+                            >
+                              Delete
+                            </Button>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                   </td>
                 </tr>
               ))
