@@ -117,7 +117,7 @@ const ChatBotPage: React.FC = () => {
         <div className="flex items-center">
           <div className="flex-grow">
             <p className="font-bold">Upgrade to Premium</p>
-            <p>You have reached your usage limit.</p>
+            <p className="text-sm">You have reached your usage limit.</p>
           </div>
           <Button size="sm" onClick={() => router.push("/dashboard/pricing")}>
             Get Premium
