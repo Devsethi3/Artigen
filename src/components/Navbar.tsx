@@ -18,13 +18,14 @@ import {
 import { MdDashboard } from "react-icons/md";
 import { SiChatbot } from "react-icons/si";
 import { IoMdSettings } from "react-icons/io";
+import { TbLogout } from "react-icons/tb";
 
 const Navbar = () => {
-  const { openUserProfile } = useClerk();
+  const { openUserProfile, signOut } = useClerk();
   const { user } = useUser();
 
   return (
-    <nav className="bg-gradient-to-r h-[10vh] border-b border-emerald-700 from-emerald-900 to-slate-900 text-emerald-50">
+    <nav className="bg-gradient-to-r h-[10vh] border-emerald-700 from-emerald-900 to-slate-900 text-emerald-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center">
@@ -34,8 +35,8 @@ const Navbar = () => {
           </Link>
 
           <div className="hidden md:flex items-center space-x-12">
-            <Link href="/pricing">Pricing</Link>
-            <Link href="/chatbot">ChatBot</Link>
+            <Link href="#pricing-cards">Pricing</Link>
+            <Link href="/dashboard/chatbot">ChatBot</Link>
             <Link href="/dashboard">Dashboard</Link>
           </div>
 
@@ -53,7 +54,7 @@ const Navbar = () => {
                         className="rounded-full cursor-pointer p-2 hover:bg-secondary/30"
                       />
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-40">
+                    <DropdownMenuContent className="w-48">
                       <DropdownMenuLabel>My Profile</DropdownMenuLabel>
                       <DropdownMenuSeparator />
 
@@ -81,6 +82,14 @@ const Navbar = () => {
                       >
                         <IoMdSettings size={18} className="mr-5" />
                         Settings
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => signOut()}
+                        className="cursor-pointer"
+                      >
+                        <TbLogout size={18} className="mr-5" />
+                        Logout
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -114,7 +123,7 @@ const Navbar = () => {
                 </SheetTrigger>
                 <SheetContent side="right">
                   <div className="flex flex-col gap-2 px-4 py-6">
-                    <nav className="flex flex-col items-start text-lg font-medium space-y-4">
+                    <nav className="flex flex-col items-start text-xl lg:text-lg mt-16 lg:mt-0 font-medium space-y-8">
                       <Link
                         href="#pricing-cards"
                         className="px-3 py-2 rounded-lg hover:bg-secondary"

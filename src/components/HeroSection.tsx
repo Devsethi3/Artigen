@@ -86,7 +86,7 @@ const HeroSection: React.FC = () => {
             ref={titleRef}
             className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-emerald-300 via-teal-300 to-emerald-300 bg-[length:200%_auto] text-transparent bg-clip-text"
           >
-            Unleash Your Creative Potential with AI
+            Unleash Your Creative Potential <br /> with AI
           </h1>
           <p
             ref={subtitleRef}

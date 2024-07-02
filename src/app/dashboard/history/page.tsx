@@ -59,7 +59,7 @@ const HistoryPage: React.FC = () => {
 
       const formattedResults = results.map((result) => ({
         ...result,
-        createdAt: moment(result.createdAt).format("DD/MM/yyyy"),
+        createdAt: moment().format("DD/MM/yyyy"),
       }));
 
       setData(formattedResults as AiResultData[]);
@@ -178,7 +178,9 @@ const HistoryPage: React.FC = () => {
                           <AlertDialogAction
                             onClick={() => deleteRow(row.id)}
                             className="bg-red-600 hover:bg-red-700"
-                          >Delete</AlertDialogAction>
+                          >
+                            Delete
+                          </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>

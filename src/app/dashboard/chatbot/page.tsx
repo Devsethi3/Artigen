@@ -6,6 +6,7 @@ import React, {
   KeyboardEvent,
   ChangeEvent,
   useRef,
+  useCallback,
 } from "react";
 import { AiOutlineSend } from "react-icons/ai";
 import { FiCopy } from "react-icons/fi";
@@ -23,7 +24,7 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { desc, eq, and, asc } from "drizzle-orm";
+import { eq, and, asc } from "drizzle-orm";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -42,19 +43,7 @@ const ChatBotPage: React.FC = () => {
   const [streaming, setStreaming] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    fetchChatHistory();
-  }, [user]);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, streaming]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const fetchChatHistory = async () => {
+  const fetchChatHistory = useCallback(async () => {
     if (!user?.primaryEmailAddress?.emailAddress) return;
 
     try {
@@ -86,9 +75,21 @@ const ChatBotPage: React.FC = () => {
     } catch (error) {
       console.error("Error fetching chat history:", error);
     }
+  }, [user]);
+
+  useEffect(() => {
+    fetchChatHistory();
+  }, [fetchChatHistory]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleSend = () => {
+  const handleSend = useCallback(() => {
     if (input.trim() === "") return;
 
     const userMessage: Message = { text: input, isUser: true };
@@ -99,120 +100,123 @@ const ChatBotPage: React.FC = () => {
     ]);
     generateAIContent({ input });
     setInput("");
-  };
+  }, [input]);
 
-  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSend();
-    }
-  };
+  const handleKeyPress = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        handleSend();
+      }
+    },
+    [handleSend]
+  );
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
-  };
+  }, []);
 
-  const generateAIContent = async (formData: Record<string, string>) => {
-    if (totalUsage >= MAXIMUM_PLAN_USAGE_VALUE) {
-      toast((t) => (
-        <div className="flex items-center">
-          <div className="flex-grow">
-            <p className="font-bold">Upgrade to Premium</p>
-            <p className="text-sm">You have reached your usage limit.</p>
+  const generateAIContent = useCallback(
+    async (formData: Record<string, string>) => {
+      if (totalUsage >= MAXIMUM_PLAN_USAGE_VALUE) {
+        toast((t) => (
+          <div className="flex items-center">
+            <div className="flex-grow">
+              <p className="font-bold">Upgrade to Premium</p>
+              <p className="text-sm">You have reached your usage limit.</p>
+            </div>
+            <Button size="sm" onClick={() => router.push("/dashboard/pricing")}>
+              Get Premium
+            </Button>
           </div>
-          <Button size="sm" onClick={() => router.push("/dashboard/pricing")}>
-            Get Premium
-          </Button>
-        </div>
-      ));
-      return;
-    }
+        ));
+        return;
+      }
 
-    try {
-      setStreaming(true);
-      const finalAIPrompt = `${JSON.stringify(formData)}`;
+      try {
+        setStreaming(true);
+        const finalAIPrompt = `${JSON.stringify(formData)}`;
 
-      const result = await chatSession.sendMessage(finalAIPrompt);
-      const responseText = await result.response.text();
+        const result = await chatSession.sendMessage(finalAIPrompt);
+        const responseText = await result.response.text();
 
-      const aiMessage: Message = { text: responseText, isUser: false };
-      setMessages((prevMessages) =>
-        prevMessages.map((msg, index) =>
-          index === prevMessages.length - 1 ? aiMessage : msg
-        )
-      );
+        const aiMessage: Message = { text: responseText, isUser: false };
+        setMessages((prevMessages) =>
+          prevMessages.map((msg, index) =>
+            index === prevMessages.length - 1 ? aiMessage : msg
+          )
+        );
 
-      await saveInDatabase(formData, responseText);
+        await saveInDatabase(formData, responseText);
 
-      setTotalUsage((prev: number) => prev + responseText.length);
-    } catch (error) {
-      console.error("Error generating AI content:", error);
-      const errorMessage: Message = {
-        text: "An error occurred while generating content. Please try again.",
-        isUser: false,
+        setTotalUsage((prev: number) => prev + responseText.length);
+      } catch (error) {
+        console.error("Error generating AI content:", error);
+        const errorMessage: Message = {
+          text: "An error occurred while generating content. Please try again.",
+          isUser: false,
+        };
+        setMessages((prevMessages) =>
+          prevMessages.map((msg, index) =>
+            index === prevMessages.length - 1 ? errorMessage : msg
+          )
+        );
+      } finally {
+        setStreaming(false);
+      }
+    },
+    [totalUsage, router, setTotalUsage]
+  );
+
+  const saveInDatabase = useCallback(
+    async (formData: Record<string, string>, aiResult: string) => {
+      if (!user?.primaryEmailAddress?.emailAddress) return;
+
+      await db.insert(AiResult).values({
+        formData: JSON.stringify(formData),
+        slug: "chatbot",
+        aiResponse: aiResult,
+        createdBy: user.primaryEmailAddress.emailAddress,
+        createdAt: new Date(),
+      });
+    },
+    [user]
+  );
+
+  const CodeBlock = React.memo(
+    ({ language, value }: { language: string; value: string }) => {
+      const [copied, setCopied] = useState(false);
+
+      const copyToClipboard = () => {
+        navigator.clipboard.writeText(value);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
       };
-      setMessages((prevMessages) =>
-        prevMessages.map((msg, index) =>
-          index === prevMessages.length - 1 ? errorMessage : msg
-        )
+
+      return (
+        <div className="relative">
+          <button
+            onClick={copyToClipboard}
+            className="absolute top-2 right-2 p-2 bg-gray-800 rounded-md text-white"
+          >
+            <FiCopy />
+          </button>
+          <SyntaxHighlighter language={language} style={vscDarkPlus}>
+            {value}
+          </SyntaxHighlighter>
+          {copied && (
+            <div className="absolute top-2 right-12 bg-green-500 text-white px-2 py-1 rounded-md">
+              Copied!
+            </div>
+          )}
+        </div>
       );
-    } finally {
-      setStreaming(false);
     }
-  };
+  );
 
-  const saveInDatabase = async (
-    formData: Record<string, string>,
-    aiResult: string
-  ) => {
-    if (!user?.primaryEmailAddress?.emailAddress) return;
-
-    await db.insert(AiResult).values({
-      formData: JSON.stringify(formData),
-      slug: "chatbot",
-      aiResponse: aiResult,
-      createdBy: user.primaryEmailAddress.emailAddress,
-      createdAt: new Date(),
-    });
-  };
-
-  const CodeBlock = ({
-    language,
-    value,
-  }: {
-    language: string;
-    value: string;
-  }) => {
-    const [copied, setCopied] = useState(false);
-
-    const copyToClipboard = () => {
-      navigator.clipboard.writeText(value);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    };
-
-    return (
-      <div className="relative">
-        <button
-          onClick={copyToClipboard}
-          className="absolute top-2 right-2 p-2 bg-gray-800 rounded-md text-white"
-        >
-          <FiCopy />
-        </button>
-        <SyntaxHighlighter language={language} style={vscDarkPlus}>
-          {value}
-        </SyntaxHighlighter>
-        {copied && (
-          <div className="absolute top-2 right-12 bg-green-500 text-white px-2 py-1 rounded-md">
-            Copied!
-          </div>
-        )}
-      </div>
-    );
-  };
+  CodeBlock.displayName = "CodeBlock";
 
   return (
     <div className="flex flex-col h-[89vh] bg-gray-100 lg:p-4 p-0">
-      {/* Chat history and empty state */}
       <div className="flex-grow overflow-y-auto bg-white lg:shadow-md lg:rounded-lg lg:p-4 p-1 w-full mb-4">
         {messages.length === 0 ? (
           <div className="w-full h-full flex items-center justify-center flex-col">
@@ -227,18 +231,17 @@ const ChatBotPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          messages.reverse().map((msg, index) => (
+          messages.map((msg, index) => (
             <div
               key={index}
               className={`flex items-end ${
                 msg.isUser ? "justify-end" : "justify-start"
               } mb-2`}
             >
-              {/* Display AI avatar for non-user messages */}
               {!msg.isUser && (
                 <div className="flex-shrink-0 mr-2">
                   <Image
-                    src="/logo.png" // Example AI avatar image path
+                    src="/logo.png"
                     alt="AI Avatar"
                     width={40}
                     height={40}
@@ -249,8 +252,8 @@ const ChatBotPage: React.FC = () => {
               <div
                 className={`px-3 py-2 max-w-[70%] break-words ${
                   msg.isUser
-                    ? "bg-primary text-white rounded-b-lg rounded-tl-lg"
-                    : "bg-secondary text-gray-800 rounded-b-lg rounded-tr-lg"
+                    ? "bg-primary text-white rounded-t-lg rounded-bl-lg"
+                    : "bg-secondary text-gray-800 rounded-t-lg rounded-br-lg"
                 }`}
               >
                 {msg.isLoading ? (
@@ -282,7 +285,6 @@ const ChatBotPage: React.FC = () => {
                   </ReactMarkdown>
                 )}
               </div>
-              {/* Display user avatar for user messages */}
               {msg.isUser && user && (
                 <div className="flex-shrink-0 ml-2">
                   <Image
@@ -300,7 +302,6 @@ const ChatBotPage: React.FC = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input area */}
       <div className="flex items-center gap-4 mx-4">
         <Input
           type="text"
@@ -320,4 +321,4 @@ const ChatBotPage: React.FC = () => {
   );
 };
 
-export default ChatBotPage;
+export default React.memo(ChatBotPage);

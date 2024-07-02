@@ -57,7 +57,7 @@ const SidebarHeader = () => {
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon" className="lg:hidden">
-              <HiMenu className="h-6 w-6" />
+              <HiMenu className="h-5 w-5 text-muted-foreground" />
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
           </SheetTrigger>
