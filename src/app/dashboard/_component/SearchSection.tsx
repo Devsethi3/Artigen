@@ -10,7 +10,7 @@ const SearchSection = () => {
         <p>What would you like to create today ?</p>
       </div>
       <div className="flex justify-center w-full">
-        <div className="flex w-1/3 gap-2 items-center bg-white py-2 px-4 rounded-lg">
+        <div className="flex  gap-2 items-center bg-white py-2 px-4 rounded-lg">
           <FaSearch size={20} className="text-gray-400 mr-2" />
           <input className="bg-transparent outline-none w-full text-black" />
         </div>

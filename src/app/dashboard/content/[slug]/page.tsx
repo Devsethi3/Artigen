@@ -111,7 +111,7 @@ const CreatePage = ({ params }: CreatePageProps) => {
           userFormInput={generateAIContent}
           isLoading={loading}
         />
-        <div className="col-span-2">
+        <div className="lg:col-span-2 w-full">
           <Result content={aiResult} isLoading={loading} />
         </div>
       </div>

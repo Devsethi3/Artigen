@@ -5,41 +5,38 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { HiMenu } from "react-icons/hi";
 import Link from "next/link";
-import { FaBriefcase, FaHome, FaUsers } from "react-icons/fa";
-import { BsFillBarChartLineFill } from "react-icons/bs";
+import { usePathname } from "next/navigation";
+import { FaHistory, FaHome } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
-import {
-  Cloud,
-  CreditCard,
-  Github,
-  Keyboard,
-  LifeBuoy,
-  LogOut,
-  Mail,
-  MessageSquare,
-  Plus,
-  PlusCircle,
-  Settings,
-  User,
-  UserPlus,
-  Users,
-} from "lucide-react";
+import { SiChatbot } from "react-icons/si";
+import { MdOutlinePayment } from "react-icons/md";
+import { useClerk, UserButton } from "@clerk/nextjs";
+import PlanUsage from "@/components/PlanUsage";
+import Image from "next/image";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { UserButton } from "@clerk/nextjs";
+const MenuList = [
+  {
+    name: "Home",
+    icon: FaHome,
+    path: "/dashboard",
+  },
+  {
+    name: "History",
+    icon: FaHistory,
+    path: "/dashboard/history",
+  },
+  {
+    name: "Pricing",
+    icon: MdOutlinePayment,
+    path: "/dashboard/pricing",
+  },
+  {
+    name: "Chatbot",
+    icon: SiChatbot,
+    path: "/dashboard/chatbot",
+    style: "new",
+  },
+];
 
 const SidebarHeader = () => {
   const userButtonAppearance = {
@@ -50,9 +47,13 @@ const SidebarHeader = () => {
     },
   };
 
+  const { openUserProfile } = useClerk();
+
+  const path = usePathname();
+
   return (
     <div className="">
-      <header className="flex h-14 lg:h-[80px] items-center gap-4 border-b wrapper">
+      <header className="flex h-14 lg:h-[80px] items-center justify-between gap-4 border-b wrapper">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon" className="lg:hidden">
@@ -60,57 +61,56 @@ const SidebarHeader = () => {
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left">
+          <SheetContent side="left" className="max-w-full overflow-x-auto">
             <div className="flex flex-col gap-2 px-4 py-6">
               <Link
-                href="#"
-                className="flex items-center gap-2 font-semibold"
+                href="/"
+                className="flex items-center gap-2 mb-5 font-semibold"
                 prefetch={false}
               >
-                <span className="">ArtiGen</span>
+                <Image
+                  src="/logo.png"
+                  width={40}
+                  height={40}
+                  alt="logo"
+                  className="rounded-full"
+                />
+                <span className="text-2xl font-bold bg-gradient-to-r from-emerald-300 to-blue-400 text-transparent bg-clip-text">
+                  ArtiGen
+                </span>
               </Link>
               <nav className="grid items-start text-sm font-medium">
-                <Link
-                  href="#"
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                  prefetch={false}
-                >
-                  <FaHome className="h-4 w-4" />
-                  Dashboard
-                </Link>
-                <Link
-                  href="#"
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                  prefetch={false}
-                >
-                  <BsFillBarChartLineFill className="h-4 w-4" />
-                  Analytics
-                </Link>
-                <Link
-                  href="#"
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                  prefetch={false}
-                >
-                  <FaBriefcase className="h-4 w-4" />
-                  Projects
-                </Link>
-                <Link
-                  href="#"
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                  prefetch={false}
-                >
-                  <FaUsers className="h-4 w-4" />
-                  Customers
-                </Link>
-                <Link
-                  href="#"
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                  prefetch={false}
-                >
-                  <IoMdSettings className="h-4 w-4" />
-                  Settings
-                </Link>
+                {MenuList.map((list) => {
+                  const Icon = list.icon;
+                  return (
+                    <Link
+                      key={list.name}
+                      href={list.path}
+                      className={`flex items-center text-lg gap-3 rounded-lg px-3 py-2 my-1 transition-all ${
+                        path === list.path
+                          ? "bg-primary text-white hover:bg-none"
+                          : "text-muted-foreground hover:text-primary"
+                      }`}
+                      prefetch={false}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {list.name}
+                      {list.style ? (
+                        <div className="text-xs bg-indigo-600 px-2 py-1 text-white rounded-full">
+                          {list.style}
+                        </div>
+                      ) : null}
+                    </Link>
+                  );
+                })}
               </nav>
+            </div>
+            <div className="absolute bottom-10 w-full left-0 wrapper">
+              <Button className="w-full mb-4" onClick={() => openUserProfile()}>
+                <IoMdSettings size={20} className="mr-2" />
+                Settings
+              </Button>
+              <PlanUsage />
             </div>
           </SheetContent>
         </Sheet>
@@ -119,77 +119,6 @@ const SidebarHeader = () => {
         </div>
         <div className="flex items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
           <UserButton afterSignOutUrl="/" appearance={userButtonAppearance} />
-          {/* <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button className="rounded-full" size="icon">DE</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 mr-5">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
-                  <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  <span>Billing</span>
-                  <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
-                  <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Keyboard className="mr-2 h-4 w-4" />
-                  <span>Keyboard shortcuts</span>
-                  <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <Users className="mr-2 h-4 w-4" />
-                  <span>Team</span>
-                </DropdownMenuItem>
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger>
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    <span>Invite users</span>
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuPortal>
-                    <DropdownMenuSubContent>
-                      <DropdownMenuItem>
-                        <Mail className="mr-2 h-4 w-4" />
-                        <span>Email</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <MessageSquare className="mr-2 h-4 w-4" />
-                        <span>Message</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        <PlusCircle className="mr-2 h-4 w-4" />
-                        <span>More...</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuSubContent>
-                  </DropdownMenuPortal>
-                </DropdownMenuSub>
-                <DropdownMenuItem>
-                  <Plus className="mr-2 h-4 w-4" />
-                  <span>New Team</span>
-                  <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Github className="mr-2 h-4 w-4" />
-                <span>GitHub</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu> */}
         </div>
       </header>
     </div>

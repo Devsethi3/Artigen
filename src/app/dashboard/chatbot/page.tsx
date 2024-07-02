@@ -247,7 +247,7 @@ const ChatBotPage: React.FC = () => {
                 </div>
               )}
               <div
-                className={`px-3 py-2 max-w-[65%] ${
+                className={`px-3 py-2 max-w-[70%] break-words ${
                   msg.isUser
                     ? "bg-primary text-white rounded-b-lg rounded-tl-lg"
                     : "bg-secondary text-gray-800 rounded-b-lg rounded-tr-lg"

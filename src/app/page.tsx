@@ -8,7 +8,7 @@ const HomePage = () => {
     <div>
       <Navbar />
       <HeroSection />
-      <div className="wrapper my-5">
+      <div className="wrapper my-5" id="pricing-cards">
         <PricingCards />
       </div>
     </div>

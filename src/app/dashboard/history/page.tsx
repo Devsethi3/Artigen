@@ -27,13 +27,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Table,
   TableBody,
   TableCaption,
@@ -102,7 +95,7 @@ const HistoryPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container overflow-y-hidden mx-auto p-4">
       <h1 className="text-2xl font-bold">History</h1>
       <p className="mb-6 text-muted-foreground">
         Get your previously generated AI Results
