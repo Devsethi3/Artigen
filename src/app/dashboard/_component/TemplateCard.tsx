@@ -10,7 +10,7 @@ const TemplateCard = (item: TEMPLATE) => {
         <div className="flex flex-col gap-4">
           <Image src={item.icon} width={50} height={50} alt={item.category} />
           <h4 className="text-lg font-bold lg:text-xl">{item.name}</h4>
-          <p className="line-clamp-3 text-sm lg:text-base lg:line-clamp-2">{item.desc}</p>
+          <p className="line-clamp-2">{item.desc}</p>
         </div>
       </div>
     </Link>
