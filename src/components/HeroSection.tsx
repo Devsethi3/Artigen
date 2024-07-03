@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useRef, useLayoutEffect } from "react";
+import React, { useRef } from "react";
 import { Button } from "./ui/button";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRouter } from "next/navigation";
 import { useGSAP } from "@gsap/react";
 import { FlipWords } from "./ui/FlipWords";
+import { motion } from "framer-motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,7 +21,7 @@ const HeroSection: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  const words = ["Creativity", "Ideas"];
+  const words = ["Innovation", "Efficiency", "Creativity"];
 
   useGSAP(() => {
     gsap.context(() => {
@@ -43,7 +44,7 @@ const HeroSection: React.FC = () => {
       <div className="max-w-6xl w-full py-20">
         <div className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-emerald-300 via-teal-300 to-emerald-300 bg-[length:200%_auto] text-transparent bg-clip-text">
-            Unleash Your <FlipWords words={words} /> <br /> with AI
+            Unleash Your <FlipWords words={words} /> <br /> Potential with AI
           </h1>
           <div>
             <Button
@@ -60,17 +61,17 @@ const HeroSection: React.FC = () => {
           <FeatureCard
             icon="🎨"
             title="AI-Powered Design"
-            description="Create stunning visuals with our intelligent design assistant"
+            description="Effortlessly craft stunning visuals with our intelligent design tools, powered by AI."
           />
           <FeatureCard
             icon="📝"
-            title="Smart Content Generation"
-            description="Produce high-quality content with AI-driven writing tools"
+            title="Advanced Content Creation"
+            description="Generate high-quality, engaging content with our AI-driven writing assistants."
           />
           <FeatureCard
-            icon="🔍"
-            title="Intelligent Analysis"
-            description="Gain deep insights with our advanced AI analytics"
+            icon="📊"
+            title="Deep Analytics"
+            description="Unlock valuable insights with our advanced AI-powered analytics tools."
           />
         </div>
       </div>
@@ -81,14 +82,17 @@ const HeroSection: React.FC = () => {
 const FeatureCard = React.forwardRef<HTMLDivElement, FeatureCardProps>(
   ({ icon, title, description }, ref) => {
     return (
-      <div
+      <motion.div
         ref={ref}
         className="bg-emerald-800 bg-opacity-50 p-6 rounded-lg shadow-lg transition duration-300 ease-in-out hover:shadow-xl hover:bg-opacity-70 transform hover:scale-105"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
       >
         <div className="text-5xl mb-4">{icon}</div>
         <h3 className="text-xl font-semibold mb-2 text-emerald-300">{title}</h3>
         <p className="text-emerald-100">{description}</p>
-      </div>
+      </motion.div>
     );
   }
 );
