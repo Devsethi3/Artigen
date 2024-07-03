@@ -60,8 +60,8 @@ const HeroSection: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <FeatureCard
             icon="🎨"
-            title="AI-Powered Design"
-            description="Effortlessly craft stunning visuals with our intelligent design tools, powered by AI."
+            title="Smart Visual Generation"
+            description="Easily create amazing content ideas with simple prompt using our AI-powered design tools."
           />
           <FeatureCard
             icon="📝"
