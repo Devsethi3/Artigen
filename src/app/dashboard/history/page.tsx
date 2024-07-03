@@ -95,7 +95,7 @@ const HistoryPage: React.FC = () => {
   };
 
   return (
-    <div className="container overflow-y-hidden mx-auto p-4">
+    <div className="container min-h-[90vh] overflow-y-hidden mx-auto p-4">
       <h1 className="text-2xl font-bold">History</h1>
       <p className="mb-6 text-muted-foreground">
         Get your previously generated AI Results
@@ -106,7 +106,7 @@ const HistoryPage: React.FC = () => {
           <TableRow>
             <TableHead>Template</TableHead>
             <TableHead>AI Response</TableHead>
-            <TableHead>Date</TableHead>
+            {/* <TableHead>Date</TableHead> */}
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -127,11 +127,11 @@ const HistoryPage: React.FC = () => {
             data.map((row) => (
               <TableRow key={row.id}>
                 <TableCell className="font-medium">{row.slug}</TableCell>
-                <TableCell>
+                <TableCell className="max-w-[500px]">
                   <div className="line-clamp-3">{row.aiResponse}</div>
                 </TableCell>
-                <TableCell>{row.createdAt}</TableCell>
-                <TableCell className="text-right">
+                {/* <TableCell>{row.createdAt}</TableCell> */}
+                <TableCell className="text-left">
                   <div className="flex justify-end items-center space-x-2">
                     <TooltipProvider>
                       <Tooltip>

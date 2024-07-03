@@ -1,14 +1,17 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import SearchSection from "./_component/SearchSection";
 import TemplateList from "./_component/TemplateList";
 
 const DashbaordPage = () => {
+  const [searchInput, setSearchInput] = useState<string>();
   return (
     <div>
       {/* Search Section */}
-      <SearchSection />
+      <SearchSection onSearchInput={(value: string) => setSearchInput(value)} />
       {/* Templates List Section */}
-      <TemplateList />
+      <TemplateList searchInput={searchInput} />
     </div>
   );
 };

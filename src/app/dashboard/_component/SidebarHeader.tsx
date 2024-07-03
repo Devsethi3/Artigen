@@ -52,7 +52,7 @@ const SidebarHeader = () => {
   const path = usePathname();
 
   return (
-    <div className="">
+    <div className="sticky inset-0 z-10 bg-[#F7FDFB]">
       <header className="flex h-14 lg:h-[80px] items-center justify-between gap-4 border-b wrapper">
         <Sheet>
           <SheetTrigger asChild>

@@ -5,6 +5,8 @@ import { Button } from "./ui/button";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRouter } from "next/navigation";
+import { useGSAP } from "@gsap/react";
+import { FlipWords } from "./ui/FlipWords";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,14 +18,12 @@ interface FeatureCardProps {
 
 const HeroSection: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const buttonRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const router = useRouter();
 
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
+  const words = ["Creativity", "Ideas"];
+
+  useGSAP(() => {
+    gsap.context(() => {
       // Subtle background animation
       gsap.to(sectionRef.current, {
         duration: 20,
@@ -32,49 +32,7 @@ const HeroSection: React.FC = () => {
         repeat: -1,
         yoyo: true,
       });
-
-      // Animate title with a gradient text effect
-      const titleElement = titleRef.current;
-      if (titleElement) {
-        gsap.to(titleElement, {
-          duration: 3,
-          backgroundPosition: "200% center",
-          ease: "none",
-          repeat: -1,
-        });
-      }
-
-      // Animate subtitle with a typing effect
-      const subtitleElement = subtitleRef.current;
-      if (subtitleElement) {
-        const text = subtitleElement.textContent || "";
-        subtitleElement.textContent = "";
-        gsap.to(subtitleElement, {
-          duration: text.length * 0.05,
-          text: { value: text, delimiter: "" },
-          ease: "none",
-          delay: 0.5,
-        });
-      }
-
-      // Animate feature cards
-      cardsRef.current.forEach((card, index) => {
-        gsap.from(card, {
-          scrollTrigger: {
-            trigger: card,
-            start: "top bottom-=50",
-            toggleActions: "play none none reverse",
-          },
-          duration: 0.8,
-          autoAlpha: 0,
-          y: 30,
-          ease: "power3.out",
-          delay: index * 0.2,
-        });
-      });
     }, sectionRef);
-
-    return () => ctx.revert(); // Cleanup
   }, []);
 
   return (
@@ -84,23 +42,14 @@ const HeroSection: React.FC = () => {
     >
       <div className="max-w-6xl w-full py-20">
         <div className="text-center mb-16">
-          <h1
-            ref={titleRef}
-            className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-emerald-300 via-teal-300 to-emerald-300 bg-[length:200%_auto] text-transparent bg-clip-text"
-          >
-            Unleash Your Creative Potential <br /> with AI
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-emerald-300 via-teal-300 to-emerald-300 bg-[length:200%_auto] text-transparent bg-clip-text">
+            Unleash Your <FlipWords words={words} /> <br /> with AI
           </h1>
-          <p
-            ref={subtitleRef}
-            className="text-xl sm:text-2xl mb-8 text-emerald-100"
-          >
-            Transform ideas into reality with our amazing AI tools
-          </p>
-          <div ref={buttonRef}>
+          <div>
             <Button
               onClick={() => router.push("/dashboard")}
               size="lg"
-              className="bg-emerald-500 hover:bg-emerald-600 text-white transition-all duration-300 ease-in-out"
+              className="bg-emerald-500 mt-5 hover:bg-emerald-600 text-white transition-all duration-300 ease-in-out"
             >
               Start Creating
             </Button>
@@ -112,25 +61,16 @@ const HeroSection: React.FC = () => {
             icon="🎨"
             title="AI-Powered Design"
             description="Create stunning visuals with our intelligent design assistant"
-            ref={(el) => {
-              cardsRef.current[0] = el;
-            }}
           />
           <FeatureCard
             icon="📝"
             title="Smart Content Generation"
             description="Produce high-quality content with AI-driven writing tools"
-            ref={(el) => {
-              cardsRef.current[1] = el;
-            }}
           />
           <FeatureCard
             icon="🔍"
             title="Intelligent Analysis"
             description="Gain deep insights with our advanced AI analytics"
-            ref={(el) => {
-              cardsRef.current[2] = el;
-            }}
           />
         </div>
       </div>
