@@ -4,6 +4,7 @@ import React, { useRef, useLayoutEffect } from "react";
 import { Button } from "./ui/button";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRouter } from "next/navigation";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,6 +20,7 @@ const HeroSection: React.FC = () => {
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const router = useRouter();
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -96,6 +98,7 @@ const HeroSection: React.FC = () => {
           </p>
           <div ref={buttonRef}>
             <Button
+              onClick={() => router.push("/dashboard")}
               size="lg"
               className="bg-emerald-500 hover:bg-emerald-600 text-white transition-all duration-300 ease-in-out"
             >

@@ -11,33 +11,35 @@ const font = Merienda({
 });
 
 export const metadata: Metadata = {
-  title: "ArtiGen | Smart AI Content Assistant",
+  title: "ArtiGen | AI-Powered Content Creation Assistant",
   description:
-    "ArtiGen is your AI-powered content generation assistant, helping you create engaging content effortlessly. Whether you need blog posts, social media content, or chatbot interactions, ArtiGen makes it easy and efficient.",
+    "Revolutionize your content strategy with ArtiGen, the advanced AI content assistant. Create engaging blog posts, social media content, and chatbot responses in minutes. Boost your productivity and creativity with our intelligent, easy-to-use platform.",
   keywords:
-    "AI content generator, AI assistant, content creation, AI-powered, ArtiGen, blog posts, social media content, chatbot",
+    "AI content generator, content creation tool, artificial intelligence writing, automated content, SEO content, social media posts, blog writing assistant, chatbot content, ArtiGen",
   authors: [
     {
       name: "Dev Prasad Sethi",
-      url: "https://www.artigen.com",
+      url: "https://artigen-nine.vercel.app",
     },
   ],
   viewport: "width=device-width, initial-scale=1.0",
   openGraph: {
-    title: "ArtiGen | Smart AI Content Assistant",
+    title: "ArtiGen | Transform Your Content Creation with AI",
     description:
-      "Transform your content creation process with ArtiGen's AI-powered assistant. Create compelling content for blogs, social media, and more with ease.",
+      "Unlock the power of AI for your content needs. ArtiGen helps you create high-quality, engaging content for blogs, social media, and chatbots in a fraction of the time. Experience the future of content creation today.",
     images: [
       {
-        url: "/logo.png",
-        width: 800,
-        height: 600,
-        alt: "ArtiGen Open Graph Image",
+        url: "https://artigen-nine.vercel.app/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "ArtiGen AI Content Assistant",
       },
     ],
-    url: "https://artigen.vercel.com",
+    url: "https://artigen-nine.vercel.app/",
     type: "website",
+    siteName: "ArtiGen",
   },
+  robots: "index, follow",
 };
 
 export default function RootLayout({

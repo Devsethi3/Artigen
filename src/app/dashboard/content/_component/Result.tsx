@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import { Editor } from "@toast-ui/react-editor";
 import { useEffect, useRef, useState } from "react";
-import { TbCopy } from "react-icons/tb";
+import toast from "react-hot-toast";
+import { TbCopy, TbCheck } from "react-icons/tb";
 
 interface ResultProps {
   content: string;
@@ -13,7 +14,10 @@ interface ResultProps {
 
 const Result: React.FC<ResultProps> = ({ content, isLoading }) => {
   const editorRef = useRef<Editor>(null);
-  const [currentContent, setCurrentContent] = useState("Your result will appear here");
+  const [currentContent, setCurrentContent] = useState(
+    "Your result will appear here"
+  );
+  const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => {
     if (content) {
@@ -33,7 +37,9 @@ const Result: React.FC<ResultProps> = ({ content, isLoading }) => {
     if (editorInstance) {
       const markdown = editorInstance.getMarkdown();
       navigator.clipboard.writeText(markdown);
-      // You might want to add a toast notification here to inform the user that the content has been copied
+      setIsCopied(true);
+      toast.success("Copied Successfully!");
+      setTimeout(() => setIsCopied(false), 1000);
     }
   };
 
@@ -41,9 +47,23 @@ const Result: React.FC<ResultProps> = ({ content, isLoading }) => {
     <div className="bg-white shadow-lg border relative">
       <div className="flex items-center justify-between p-5">
         <h2 className="text-lg font-semibold">Your Result</h2>
-        <Button onClick={copyContent} disabled={isLoading || currentContent === "Your result will appear here"}>
-          <TbCopy size={20} className="mr-2" />
-          Copy
+        <Button
+          onClick={copyContent}
+          disabled={
+            isLoading || currentContent === "Your result will appear here"
+          }
+        >
+          {isCopied ? (
+            <>
+              <TbCheck size={20} className="mr-2" />
+              Copied!
+            </>
+          ) : (
+            <>
+              <TbCopy size={20} className="mr-2" />
+              Copy
+            </>
+          )}
         </Button>
       </div>
       <Editor
@@ -62,7 +82,9 @@ const Result: React.FC<ResultProps> = ({ content, isLoading }) => {
       />
       {isLoading && (
         <div className="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center">
-          <div className="animate-pulse text-lg font-semibold">Generating content...</div>
+          <div className="animate-pulse text-lg font-semibold">
+            Generating content...
+          </div>
         </div>
       )}
     </div>
