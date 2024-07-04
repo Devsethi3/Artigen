@@ -65,8 +65,8 @@ const DashboardHomePage = () => {
       </Card>
       <Card className="h-full">
         <CardHeader>
-          <CardTitle>New Users</CardTitle>
-          <CardDescription>Registered in the last 7 days</CardDescription>
+          <CardTitle>Credits User</CardTitle>
+          <CardDescription>AI Credits Userd in last 7 days</CardDescription>
         </CardHeader>
         <CardContent className="flex items-center justify-between">
           <div className="text-4xl font-bold">+2,350</div>
