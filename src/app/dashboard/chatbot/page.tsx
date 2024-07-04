@@ -27,12 +27,7 @@ import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { eq, and, asc } from "drizzle-orm";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-
-interface Message {
-  text: string;
-  isUser: boolean;
-  isLoading?: boolean;
-}
+import { Message } from "@/types";
 
 const ChatBotPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);

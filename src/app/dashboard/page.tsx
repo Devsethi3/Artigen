@@ -9,18 +9,22 @@ import {
 } from "@/components/ui/card";
 import LineChart from "@/components/LineChart";
 import BarChart from "@/components/BarChart";
-import PieChart from "@/components/PieChart";
 import { ArrowUpIcon } from "lucide-react";
 import { db } from "@/lib/db";
 import { AiResult } from "@/lib/schema";
-import { desc } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 import moment from "moment";
-import { AiResultData } from "@/types";
-import { useEffect, useState } from "react";
+import { AiResultData, Message } from "@/types";
+import { useCallback, useEffect, useState } from "react";
+import { useTotalUsage } from "@/context/TotalUsageContext";
+import { useUser } from "@clerk/nextjs";
 
 const DashboardHomePage = () => {
   const [data, setData] = useState<AiResultData[]>([]);
   const [loading, setLoading] = useState(true);
+  const { totalUsage, setTotalUsage } = useTotalUsage();
+  const { user } = useUser();
+  const [totalChatbotInteractions, setTotalChatbotInteractions] = useState(0);
 
   const fetchData = async () => {
     try {
@@ -31,12 +35,10 @@ const DashboardHomePage = () => {
 
       const formattedResults = results.map((result) => ({
         ...result,
-        createdAt: moment().format("DD/MM/yyyy"),
+        createdAt: moment(result.createdAt).format("DD/MM/yyyy"),
       }));
 
       setData(formattedResults as AiResultData[]);
-
-      console.log("formattedResults", formattedResults[0].createdAt);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -44,9 +46,80 @@ const DashboardHomePage = () => {
     }
   };
 
+  const getData = async () => {
+    try {
+      if (!user?.primaryEmailAddress?.emailAddress) return;
+      const results = await db
+        .select()
+        .from(AiResult)
+        .where(eq(AiResult.createdBy, user.primaryEmailAddress.emailAddress));
+
+      const total = getTotalUsage(results);
+      setTotalUsage(total);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getTotalUsage = (results: AiResultData[]): number => {
+    return results.reduce((total, element) => {
+      return total + (element.aiResponse ? element.aiResponse.length : 0);
+    }, 0);
+  };
+
+  const fetchChatHistory = useCallback(async () => {
+    if (!user?.primaryEmailAddress?.emailAddress) return;
+
+    try {
+      const results = await db
+        .select()
+        .from(AiResult)
+        .where(
+          and(
+            eq(AiResult.slug, "chatbot"),
+            eq(AiResult.createdBy, user.primaryEmailAddress.emailAddress)
+          )
+        )
+        .orderBy(asc(AiResult.createdAt));
+
+      const chatHistory: Message[] = results.flatMap((result) => {
+        try {
+          const formData = JSON.parse(result.formData as string);
+          return [
+            { text: formData.input as string, isUser: true },
+            { text: result.aiResponse || "", isUser: false },
+          ];
+        } catch (error) {
+          console.error("Error parsing formData:", error);
+          return [];
+        }
+      });
+
+      setTotalChatbotInteractions(chatHistory.length / 2);
+    } catch (error) {
+      console.error("Error fetching chat history:", error);
+    }
+  }, [user]);
+
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (user) {
+      fetchData();
+      getData();
+      fetchChatHistory();
+      const intervalId = setInterval(() => {
+        fetchData();
+        getData();
+        fetchChatHistory();
+      }, 10000);
+
+      return () => clearInterval(intervalId);
+    }
+  }, [user, fetchChatHistory]);
+
+  const totalAiGenerations = data.length;
+  const lastHourSessions = data.filter((result) =>
+    moment(result.createdAt, "DD/MM/yyyy").isAfter(moment().subtract(1, "hour"))
+  ).length;
 
   return (
     <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -56,23 +129,23 @@ const DashboardHomePage = () => {
           <CardDescription>Generated in the last 30 days</CardDescription>
         </CardHeader>
         <CardContent className="flex items-center justify-between">
-          <div className="text-4xl font-bold">45,231</div>
+          <div className="text-4xl font-bold">{totalAiGenerations}</div>
           <div className="flex items-center gap-1 text-sm font-medium text-primary">
             <ArrowUpIcon className="w-4 h-4" />
-            <span>20.1%</span>
+            <span>20.1%</span> {/* Placeholder percentage */}
           </div>
         </CardContent>
       </Card>
       <Card className="h-full">
         <CardHeader>
-          <CardTitle>Credits User</CardTitle>
-          <CardDescription>AI Credits Userd in last 7 days</CardDescription>
+          <CardTitle>Credits Used</CardTitle>
+          <CardDescription>AI Credits Used in last 7 days</CardDescription>
         </CardHeader>
         <CardContent className="flex items-center justify-between">
-          <div className="text-4xl font-bold">+2,350</div>
+          <div className="text-4xl font-bold">+{totalUsage}</div>
           <div className="flex items-center gap-1 text-sm font-medium text-primary">
             <ArrowUpIcon className="w-4 h-4" />
-            <span>180.1%</span>
+            <span>180.1%</span> {/* Placeholder percentage */}
           </div>
         </CardContent>
       </Card>
@@ -82,24 +155,24 @@ const DashboardHomePage = () => {
           <CardDescription>In the last 30 days</CardDescription>
         </CardHeader>
         <CardContent className="flex items-center justify-between">
-          <div className="text-4xl font-bold">+12,234</div>
+          <div className="text-4xl font-bold">{totalChatbotInteractions}</div>
           <div className="flex items-center gap-1 text-sm font-medium text-primary">
             <ArrowUpIcon className="w-4 h-4" />
-            <span>19%</span>
+            <span>19%</span> {/* Placeholder percentage */}
           </div>
         </CardContent>
       </Card>
-      
+
       <Card className="h-full">
         <CardHeader>
           <CardTitle>Active Sessions</CardTitle>
           <CardDescription>In the last hour</CardDescription>
         </CardHeader>
         <CardContent className="flex items-center justify-between">
-          <div className="text-4xl font-bold">+573</div>
+          <div className="text-4xl font-bold">+{lastHourSessions}</div>
           <div className="flex items-center gap-1 text-sm font-medium text-primary">
             <ArrowUpIcon className="w-4 h-4" />
-            <span>201</span>
+            <span>201</span> {/* Placeholder percentage */}
           </div>
         </CardContent>
       </Card>
@@ -127,3 +200,4 @@ const DashboardHomePage = () => {
 };
 
 export default DashboardHomePage;
+

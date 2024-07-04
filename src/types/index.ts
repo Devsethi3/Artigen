@@ -26,3 +26,8 @@ export interface AiResultData {
   createdAt: string; // This will be in the format "DD/MM/yyyy"
 }
 
+export interface Message {
+  text: string;
+  isUser: boolean;
+  isLoading?: boolean;
+}
