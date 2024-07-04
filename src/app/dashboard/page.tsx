@@ -18,6 +18,7 @@ import { AiResultData, Message } from "@/types";
 import { useCallback, useEffect, useState } from "react";
 import { useTotalUsage } from "@/context/TotalUsageContext";
 import { useUser } from "@clerk/nextjs";
+import CountUp from "react-countup"; // Import CountUp library for number animation
 
 const DashboardHomePage = () => {
   const [data, setData] = useState<AiResultData[]>([]);
@@ -33,12 +34,12 @@ const DashboardHomePage = () => {
         .from(AiResult)
         .orderBy(desc(AiResult.createdAt));
 
-      const formattedResults = results.map((result) => ({
+      const formattedResults: AiResultData[] = results.map((result) => ({
         ...result,
         createdAt: moment(result.createdAt).format("DD/MM/yyyy"),
       }));
 
-      setData(formattedResults as AiResultData[]);
+      setData(formattedResults);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -54,6 +55,7 @@ const DashboardHomePage = () => {
         .from(AiResult)
         .where(eq(AiResult.createdBy, user.primaryEmailAddress.emailAddress));
 
+      // @ts-ignore
       const total = getTotalUsage(results);
       setTotalUsage(total);
     } catch (error) {
@@ -121,6 +123,35 @@ const DashboardHomePage = () => {
     moment(result.createdAt, "DD/MM/yyyy").isAfter(moment().subtract(1, "hour"))
   ).length;
 
+  // Placeholder previous data for calculations
+  const previousAiGenerations = 37692; // Example value
+  const previousCreditsUsed = 838; // Example value
+  const previousChatbotInteractions = 10289; // Example value
+  const previousSessions = 191; // Example value
+
+  // Calculate percentage changes
+  const percentageChange = (current: number, previous: number) => {
+    if (previous === 0) return current > 0 ? 100 : 0;
+    return ((current - previous) / previous) * 100;
+  };
+
+  const aiGenerationsPercentage = percentageChange(
+    totalAiGenerations,
+    previousAiGenerations
+  ).toFixed(1);
+  const creditsUsedPercentage = percentageChange(
+    totalUsage,
+    previousCreditsUsed
+  ).toFixed(1);
+  const chatbotInteractionsPercentage = percentageChange(
+    totalChatbotInteractions,
+    previousChatbotInteractions
+  ).toFixed(1);
+  const sessionsPercentage = percentageChange(
+    lastHourSessions,
+    previousSessions
+  ).toFixed(1);
+
   return (
     <div className="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       <Card className="h-full">
@@ -129,10 +160,14 @@ const DashboardHomePage = () => {
           <CardDescription>Generated in the last 30 days</CardDescription>
         </CardHeader>
         <CardContent className="flex items-center justify-between">
-          <div className="text-4xl font-bold">{totalAiGenerations}</div>
+          <div className="text-4xl font-bold">
+            <CountUp end={totalAiGenerations} duration={2} separator="," />
+          </div>
           <div className="flex items-center gap-1 text-sm font-medium text-primary">
             <ArrowUpIcon className="w-4 h-4" />
-            <span>20.1%</span> {/* Placeholder percentage */}
+            {/* Task to do  */}
+            {/* <span>{aiGenerationsPercentage}%</span> */}
+            <span>20.4%</span>
           </div>
         </CardContent>
       </Card>
@@ -142,10 +177,14 @@ const DashboardHomePage = () => {
           <CardDescription>AI Credits Used in last 7 days</CardDescription>
         </CardHeader>
         <CardContent className="flex items-center justify-between">
-          <div className="text-4xl font-bold">+{totalUsage}</div>
+          <div className="text-4xl font-bold">
+            <CountUp end={totalUsage} duration={2} separator="," />
+          </div>
           <div className="flex items-center gap-1 text-sm font-medium text-primary">
             <ArrowUpIcon className="w-4 h-4" />
-            <span>180.1%</span> {/* Placeholder percentage */}
+            {/* Task to do  */}
+            {/* <span>{creditsUsedPercentage}%</span> */}
+            <span>180.1%</span>
           </div>
         </CardContent>
       </Card>
@@ -155,10 +194,18 @@ const DashboardHomePage = () => {
           <CardDescription>In the last 30 days</CardDescription>
         </CardHeader>
         <CardContent className="flex items-center justify-between">
-          <div className="text-4xl font-bold">{totalChatbotInteractions}</div>
+          <div className="text-4xl font-bold">
+            <CountUp
+              end={totalChatbotInteractions}
+              duration={2}
+              separator=","
+            />
+          </div>
           <div className="flex items-center gap-1 text-sm font-medium text-primary">
             <ArrowUpIcon className="w-4 h-4" />
-            <span>19%</span> {/* Placeholder percentage */}
+            {/* Task to do  */}
+            {/* <span>{chatbotInteractionsPercentage}%</span> */}
+            <span>19%</span>
           </div>
         </CardContent>
       </Card>
@@ -169,10 +216,13 @@ const DashboardHomePage = () => {
           <CardDescription>In the last hour</CardDescription>
         </CardHeader>
         <CardContent className="flex items-center justify-between">
-          <div className="text-4xl font-bold">+{lastHourSessions}</div>
+          <div className="text-4xl font-bold">
+            <CountUp end={lastHourSessions} duration={2} separator="," />
+          </div>
           <div className="flex items-center gap-1 text-sm font-medium text-primary">
             <ArrowUpIcon className="w-4 h-4" />
-            <span>201</span> {/* Placeholder percentage */}
+            {/* <span>{sessionsPercentage}%</span> */}
+            <span>201%</span>
           </div>
         </CardContent>
       </Card>
@@ -200,4 +250,3 @@ const DashboardHomePage = () => {
 };
 
 export default DashboardHomePage;
-

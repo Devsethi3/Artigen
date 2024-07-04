@@ -55,6 +55,7 @@ export default function RootLayout({
         </head>
         <body className={font.className}>
           <NextTopLoader
+            showSpinner={false}
             color="#10B77F"
             crawlSpeed={200}
             height={4}
