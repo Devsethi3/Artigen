@@ -25,3 +25,4 @@ export interface AiResultData {
   createdBy: string;
   createdAt: string; // This will be in the format "DD/MM/yyyy"
 }
+

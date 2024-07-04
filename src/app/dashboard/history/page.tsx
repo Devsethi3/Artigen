@@ -35,15 +35,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-interface AiResultData {
-  id: number;
-  formData: string;
-  aiResponse: string | null;
-  slug: string;
-  createdBy: string;
-  createdAt: string;
-}
+import { AiResultData } from "@/types";
 
 const HistoryPage: React.FC = () => {
   const [data, setData] = useState<AiResultData[]>([]);
