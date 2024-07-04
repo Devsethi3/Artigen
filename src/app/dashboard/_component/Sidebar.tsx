@@ -10,6 +10,7 @@ import { IoMdSettings } from "react-icons/io";
 import { SiChatbot } from "react-icons/si";
 import { MdOutlinePayment } from "react-icons/md";
 import Image from "next/image";
+import { HiTemplate } from "react-icons/hi";
 
 const Sidebar = () => {
   const MenuList = [
@@ -17,6 +18,11 @@ const Sidebar = () => {
       name: "Home",
       icon: FaHome,
       path: "/dashboard",
+    },
+    {
+      name: "AI Templates",
+      icon: HiTemplate,
+      path: "/dashboard/templates",
     },
     {
       name: "History",

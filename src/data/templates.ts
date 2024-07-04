@@ -1,5 +1,3 @@
-import { placeholder } from "drizzle-orm";
-
 export default [
   {
     name: "Blog Title",

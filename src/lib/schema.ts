@@ -23,12 +23,3 @@ export const AiResult = pgTable(
     };
   }
 );
-
-// export const users = pgTable("users", {
-//   id: serial("id").primaryKey(),
-//   name: text("name"),
-//   email: text("email").notNull(),
-//   emailVerified: timestamp("emailVerified", { mode: "date" }),
-//   image: text("image"),
-//   hashedPassword: text("hashedPassword"),
-// });

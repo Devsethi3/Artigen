@@ -15,3 +15,13 @@ export interface TEMPLATE {
   slug: string;
   form: FormField[];
 }
+
+// Add this new interface for AiResultData
+export interface AiResultData {
+  id: number;
+  formData: string; // Assuming this is stored as a JSON string
+  aiResponse: string;
+  slug: string;
+  createdBy: string;
+  createdAt: string; // This will be in the format "DD/MM/yyyy"
+}

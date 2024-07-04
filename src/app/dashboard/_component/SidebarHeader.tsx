@@ -3,7 +3,7 @@
 import React from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { HiMenu } from "react-icons/hi";
+import { HiMenu, HiTemplate } from "react-icons/hi";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaHistory, FaHome } from "react-icons/fa";
@@ -19,6 +19,11 @@ const MenuList = [
     name: "Home",
     icon: FaHome,
     path: "/dashboard",
+  },
+  {
+    name: "AI Templates",
+    icon: HiTemplate,
+    path: "/dashboard/templates",
   },
   {
     name: "History",
@@ -105,7 +110,7 @@ const SidebarHeader = () => {
                 })}
               </nav>
             </div>
-            <div className="absolute bottom-10 w-full left-0 wrapper">
+            <div className="absolute bottom-4 w-full left-0 wrapper">
               <Button className="w-full mb-4" onClick={() => openUserProfile()}>
                 <IoMdSettings size={20} className="mr-2" />
                 Settings
