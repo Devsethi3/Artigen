@@ -45,6 +45,7 @@ const FormSection: React.FC<FormSectionProps> = ({
       required: item.required,
       onChange: handleInputChange,
       value: formData[item.name] || "",
+      placeholder: item.placeholder || "", // Adding placeholder
       className: "w-full",
     };
 
@@ -79,7 +80,7 @@ const FormSection: React.FC<FormSectionProps> = ({
             <div key={index} className="my-2 flex flex-col gap-2 mb-7">
               <label
                 htmlFor={item.name}
-                className="text-sm text-muted-foreground"
+                className="text-xs text-muted-foreground"
               >
                 {item.label}
               </label>
