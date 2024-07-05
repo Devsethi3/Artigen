@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { RiPoliceBadgeLine } from "react-icons/ri";
 import { GrDiamond } from "react-icons/gr";
+import { PiSealCheckFill } from "react-icons/pi";
 
 const PricingCards = () => {
   return (
@@ -20,7 +21,7 @@ const PricingCards = () => {
             Elite
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            Unlock the full potential of our AI platform.
+            Unlock all features of our AI with the Elite plan.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
@@ -28,16 +29,16 @@ const PricingCards = () => {
             <h3 className="text-lg font-semibold">Features</h3>
             <ul className="grid gap-2 text-muted-foreground">
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />
                 Unlimited API requests
               </li>
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />
-                Advanced analytics
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />
+                Advanced AI models
               </li>
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />
-                Dedicated support
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />
+                Priority customer support
               </li>
             </ul>
           </div>
@@ -45,22 +46,22 @@ const PricingCards = () => {
             <h3 className="text-lg font-semibold">Usage Limits</h3>
             <ul className="grid gap-2 text-muted-foreground">
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />
-                Unlimited models
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />
+                Unlimited projects
               </li>
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />
-                Unlimited users
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />
+                Unlimited team members
               </li>
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />
-                Unlimited storage
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />
+                1TB storage
               </li>
             </ul>
           </div>
         </CardContent>
         <CardFooter className="flex flex-col items-center gap-4">
-          <div className="text-4xl font-bold">$18.99</div>
+          <div className="text-4xl font-bold">$49.99</div>
           <div className="text-muted-foreground">per month</div>
           <Button className="w-full">Get Elite</Button>
         </CardFooter>
@@ -72,23 +73,23 @@ const PricingCards = () => {
             Premium
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            Elevate your AI experience with our Premium plan.
+            Access powerful features with the Premium plan.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
           <div className="grid gap-1">
             <h3 className="text-lg font-semibold">Features</h3>
             <ul className="grid gap-2 text-muted-foreground">
-              <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />
-                500 API requests per month
+              <li className="flex items-start gap-2">
+                <PiSealCheckFill className="w-5 h-5 mt-1 fill-primary" />
+                1,000 API requests per month
               </li>
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />
-                Basic analytics
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />
+                Access to AI models
               </li>
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />
                 Email support
               </li>
             </ul>
@@ -97,20 +98,22 @@ const PricingCards = () => {
             <h3 className="text-lg font-semibold">Usage Limits</h3>
             <ul className="grid gap-2 text-muted-foreground">
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />5 models
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />
+                10 projects
               </li>
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />5 users
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />
+                10 team members
               </li>
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />
-                10GB storage
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />
+                100GB storage
               </li>
             </ul>
           </div>
         </CardContent>
         <CardFooter className="flex flex-col items-center gap-4">
-          <div className="text-4xl font-bold">$12.99</div>
+          <div className="text-4xl font-bold">$29.99</div>
           <div className="text-muted-foreground">per month</div>
           <Button className="w-full">Get Premium</Button>
         </CardFooter>
@@ -119,7 +122,7 @@ const PricingCards = () => {
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Free</CardTitle>
           <CardDescription className="text-muted-foreground">
-            Get started with our free AI platform.
+            Start exploring with our Free plan.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
@@ -127,15 +130,15 @@ const PricingCards = () => {
             <h3 className="text-lg font-semibold">Features</h3>
             <ul className="grid gap-2 text-muted-foreground">
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />
                 100 API requests per month
               </li>
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />
-                Basic analytics
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />
+                Access to basic AI models
               </li>
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />
                 Community support
               </li>
             </ul>
@@ -144,14 +147,15 @@ const PricingCards = () => {
             <h3 className="text-lg font-semibold">Usage Limits</h3>
             <ul className="grid gap-2 text-muted-foreground">
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />1 model
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />1 project
               </li>
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />1 user
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />1 team
+                member
               </li>
               <li className="flex items-center gap-2">
-                <CheckIcon className="w-5 h-5 fill-primary" />
-                1GB storage
+                <PiSealCheckFill className="w-5 h-5 fill-primary" />
+                5GB storage
               </li>
             </ul>
           </div>
@@ -167,22 +171,3 @@ const PricingCards = () => {
 };
 
 export default PricingCards;
-
-function CheckIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20 6 9 17l-5-5" />
-    </svg>
-  );
-}

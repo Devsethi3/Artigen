@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { useGSAP } from "@gsap/react";
 import { FlipWords } from "./ui/FlipWords";
 import { motion } from "framer-motion";
+import { FaGithub } from "react-icons/fa";
+import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -46,14 +48,15 @@ const HeroSection: React.FC = () => {
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-emerald-300 via-teal-300 to-emerald-300 bg-[length:200%_auto] text-transparent bg-clip-text">
             Unleash Your <FlipWords words={words} /> <br /> Potential with AI
           </h1>
-          <div>
-            <Button
-              onClick={() => router.push("/dashboard")}
-              size="lg"
-              className="bg-emerald-500 mt-5 hover:bg-emerald-600 text-white transition-all duration-300 ease-in-out"
-            >
+          <div className="flex items-center mt-12 flex-wrap justify-center gap-5">
+            <Button onClick={() => router.push("/dashboard")} size="lg">
               Start Creating
             </Button>
+            <Link href="https://github.com/Devsethi3/Artigen" target="_blank">
+              <Button variant="secondary" size="lg">
+                ⭐ Star on <FaGithub className="ml-2" size={20} />
+              </Button>
+            </Link>
           </div>
         </div>
 

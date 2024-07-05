@@ -51,7 +51,7 @@ const Navbar = () => {
                         alt={user.firstName || "user"}
                         width={55}
                         height={55}
-                        className="rounded-full cursor-pointer p-2 hover:bg-secondary/30"
+                        className="rounded-full cursor-pointer p-2 object-cover hover:bg-secondary/30"
                       />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-48">

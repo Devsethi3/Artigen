@@ -285,31 +285,6 @@ export default [
     ],
   },
   {
-    name: "LinkedIn Post Generator",
-    desc: "An AI tool that creates engaging LinkedIn posts",
-    category: "Social Media",
-    icon: "https://cdn-icons-png.flaticon.com/128/174/174857.png",
-    aiPrompt:
-      "Generate a professional and engaging LinkedIn post (100-150 words) based on the given topic and key points. Include relevant hashtags and a call-to-action. Ensure the post is optimized for engagement.",
-    slug: "generate-linkedin-post",
-    form: [
-      {
-        label: "Post Topic",
-        field: "input",
-        name: "postTopic",
-        required: true,
-        placeholder: "eg., The Future of Work",
-      },
-      {
-        label: "Key Points (comma-separated)",
-        field: "textarea",
-        name: "keyPoints",
-        required: true,
-        placeholder: "eg., Remote work trends, Digital transformation",
-      },
-    ],
-  },
-  {
     name: "Newsletter Content Generator",
     desc: "An AI tool that generates content for newsletters",
     category: "Email Marketing",
