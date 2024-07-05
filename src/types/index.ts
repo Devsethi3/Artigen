@@ -22,7 +22,7 @@ export interface AiResultData {
   aiResponse: string;
   slug: string;
   createdBy: string;
-  createdAt: string; // This will be in the format "DD/MM/yyyy"
+  createdAt: string;
 }
 
 export interface Message {
