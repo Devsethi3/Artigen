@@ -16,7 +16,6 @@ export interface TEMPLATE {
   form: FormField[];
 }
 
-// Add this new interface for AiResultData
 export interface AiResultData {
   id: number;
   formData: string; // Assuming this is stored as a JSON string
