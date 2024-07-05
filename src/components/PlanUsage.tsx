@@ -34,7 +34,6 @@ const PlanUsage: React.FC = () => {
 
       fetchData();
 
-      // Poll for updates every 10 seconds
       intervalId = setInterval(fetchData, 10000);
     }
 
