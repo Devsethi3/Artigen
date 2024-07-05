@@ -18,7 +18,7 @@ export interface TEMPLATE {
 
 export interface AiResultData {
   id: number;
-  formData: string; // Assuming this is stored as a JSON string
+  formData: string; 
   aiResponse: string;
   slug: string;
   createdBy: string;
