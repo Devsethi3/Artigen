@@ -18,7 +18,7 @@ import { AiResultData, Message } from "@/types";
 import { useCallback, useEffect, useState } from "react";
 import { useTotalUsage } from "@/context/TotalUsageContext";
 import { useUser } from "@clerk/nextjs";
-import CountUp from "react-countup"; // Import CountUp library for number animation
+import CountUp from "react-countup";
 
 const DashboardHomePage = () => {
   const [data, setData] = useState<AiResultData[]>([]);
@@ -26,6 +26,12 @@ const DashboardHomePage = () => {
   const { totalUsage, setTotalUsage } = useTotalUsage();
   const { user } = useUser();
   const [totalChatbotInteractions, setTotalChatbotInteractions] = useState(0);
+  const [chatbotInteractionsData, setChatbotInteractionsData] = useState<
+    { date: string; count: number }[]
+  >([]);
+  const [aiGenerationsData, setAiGenerationsData] = useState<
+    { date: string; count: number }[]
+  >([]);
 
   const fetchData = async () => {
     try {
@@ -40,6 +46,23 @@ const DashboardHomePage = () => {
       }));
 
       setData(formattedResults);
+
+      // Prepare data for the graph
+      const generationsByDate = formattedResults.reduce((acc, result) => {
+        const date = moment(result.createdAt, "DD/MM/yyyy").format(
+          "YYYY-MM-DD"
+        );
+        acc[date] = (acc[date] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+
+      setAiGenerationsData(
+        Object.entries(generationsByDate).map(([date, count]) => ({
+          date,
+          count,
+        }))
+      );
+
       setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -98,6 +121,20 @@ const DashboardHomePage = () => {
       });
 
       setTotalChatbotInteractions(chatHistory.length / 2);
+
+      // Prepare data for the graph
+      const interactionsByDate = results.reduce((acc, result) => {
+        const date = moment(result.createdAt).format("YYYY-MM-DD");
+        acc[date] = (acc[date] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+
+      setChatbotInteractionsData(
+        Object.entries(interactionsByDate).map(([date, count]) => ({
+          date,
+          count,
+        }))
+      );
     } catch (error) {
       console.error("Error fetching chat history:", error);
     }
@@ -124,10 +161,10 @@ const DashboardHomePage = () => {
   ).length;
 
   // Placeholder previous data for calculations
-  const previousAiGenerations = 37692; // Example value
-  const previousCreditsUsed = 838; // Example value
-  const previousChatbotInteractions = 10289; // Example value
-  const previousSessions = 191; // Example value
+  const previousAiGenerations = 37692;
+  const previousCreditsUsed = 838;
+  const previousChatbotInteractions = 10289;
+  const previousSessions = 191;
 
   // Calculate percentage changes
   const percentageChange = (current: number, previous: number) => {
@@ -165,8 +202,6 @@ const DashboardHomePage = () => {
           </div>
           <div className="flex items-center gap-1 text-sm font-medium text-primary">
             <ArrowUpIcon className="w-4 h-4" />
-            {/* Task to do  */}
-            {/* <span>{aiGenerationsPercentage}%</span> */}
             <span>20.4%</span>
           </div>
         </CardContent>
@@ -182,8 +217,6 @@ const DashboardHomePage = () => {
           </div>
           <div className="flex items-center gap-1 text-sm font-medium text-primary">
             <ArrowUpIcon className="w-4 h-4" />
-            {/* Task to do  */}
-            {/* <span>{creditsUsedPercentage}%</span> */}
             <span>180.1%</span>
           </div>
         </CardContent>
@@ -203,13 +236,10 @@ const DashboardHomePage = () => {
           </div>
           <div className="flex items-center gap-1 text-sm font-medium text-primary">
             <ArrowUpIcon className="w-4 h-4" />
-            {/* Task to do  */}
-            {/* <span>{chatbotInteractionsPercentage}%</span> */}
             <span>19%</span>
           </div>
         </CardContent>
       </Card>
-
       <Card className="h-full">
         <CardHeader>
           <CardTitle>Active Sessions</CardTitle>
@@ -221,7 +251,6 @@ const DashboardHomePage = () => {
           </div>
           <div className="flex items-center gap-1 text-sm font-medium text-primary">
             <ArrowUpIcon className="w-4 h-4" />
-            {/* <span>{sessionsPercentage}%</span> */}
             <span>201%</span>
           </div>
         </CardContent>
@@ -229,7 +258,7 @@ const DashboardHomePage = () => {
 
       <Card className="col-span-1 row-span-2 lg:col-span-2 lg:row-span-1">
         <CardHeader>
-          <CardTitle>Sales Overview</CardTitle>
+          <CardTitle>Chatbot Interactions</CardTitle>
           <CardDescription>Last 6 months</CardDescription>
         </CardHeader>
         <CardContent>
@@ -238,8 +267,8 @@ const DashboardHomePage = () => {
       </Card>
       <Card className="col-span-1 row-span-2 lg:col-span-2 lg:row-span-2">
         <CardHeader>
-          <CardTitle>Top Products</CardTitle>
-          <CardDescription>By revenue</CardDescription>
+          <CardTitle>AI Content Generations</CardTitle>
+          <CardDescription>By date</CardDescription>
         </CardHeader>
         <CardContent>
           <BarChart className="aspect-[15/8]" />
