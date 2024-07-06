@@ -37,7 +37,7 @@ const PlanUsage: React.FC = () => {
       intervalId = setInterval(fetchData, 10000);
     }
 
-    // Cleanup interval on component unmount
+    // Cleanup interval on component 
     return () => clearInterval(intervalId);
   }, [user]);
 
