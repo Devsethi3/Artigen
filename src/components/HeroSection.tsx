@@ -27,7 +27,7 @@ const HeroSection: React.FC = () => {
 
   useGSAP(() => {
     gsap.context(() => {
-      // Subtle background animation
+      // Subtle background
       gsap.to(sectionRef.current, {
         duration: 20,
         backgroundPosition: "100% 100%",
