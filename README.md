@@ -1,6 +1,6 @@
 # ArtiGen: SaaS AI Content Generation Platform
 
-ArtiGen is a cutting-edge AI content generation platform built with Next.js 14, Drizzle ORM, Gemini AI, TypeScript, Neon DB, and PostgreSQL. It leverages ShadCN UI with custom styles for an enhanced user interface. ArtiGen offers users a suite of AI-driven content generation templates and a chatbot with an advanced analytics dashboard. Users can easily update their profile information, including display name and profile picture, using a modern custom dialog.
+ArtiGen is an AI content generation platform built with Next.js 14, Drizzle ORM, Gemini AI, TypeScript, Neon DB, and PostgreSQL. It leverages ShadCN UI with custom styles for an enhanced user interface. ArtiGen offers users a suite of AI-driven content generation templates and a chatbot with an advanced analytics dashboard. Users can easily update their profile information, including display name and profile picture, using a modern custom dialog.
 
 ## Features
 
