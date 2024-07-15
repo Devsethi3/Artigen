@@ -39,26 +39,26 @@ ArtiGen is a cutting-edge AI content generation platform built with Next.js 14, 
    ```bash
    npm run dev
    ```
-<!-- 
+
 ## Preview
 
 Here are some screenshots of the ArtiGen platform:
 
 1. **Landing Page**
 
-   ![Landing Page](Landing_page_image)
+   ![Landing Page](Landing_page.png)
 
 2. **User Dashboard**
 
-   ![User Dashboard](Dashboard_image)
+   ![User Dashboard](Dashboard_image.png)
 
 3. **Chatbot**
 
-   ![Chatbot](Chatbot_image)
+   ![Chatbot](Chatbot_image.png)
 
 4. **Templates**
 
-   ![Templates](Templates_image) -->
+   ![Templates](Templates_image.png)
 
 ## Demo
 
