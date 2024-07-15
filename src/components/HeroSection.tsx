@@ -46,8 +46,10 @@ const HeroSection: React.FC = () => {
       <div className="max-w-6xl w-full py-20">
         <div className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-emerald-300 via-teal-300 to-emerald-300 bg-[length:200%_auto] text-transparent bg-clip-text">
-            Unleash Your <FlipWords words={words} /> <br /> Potential with AI
+            Revolutionize Your <FlipWords words={words} /> <br /> Journey with
+            AI
           </h1>
+
           <div className="flex items-center mt-12 flex-wrap justify-center gap-5">
             <Button onClick={() => router.push("/dashboard")} size="lg">
               Start Creating
