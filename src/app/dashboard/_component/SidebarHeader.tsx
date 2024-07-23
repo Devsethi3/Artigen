@@ -122,7 +122,7 @@ const SidebarHeader = () => {
         <div className="">
           <h1 className="font-semibold text-lg">Dashboard</h1>
         </div>
-        <div className="flex items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
+        <div className="flex items-center gap-4 mr-3 lg:mr-5 md:ml-auto md:gap-2 lg:gap-4">
           <UserButton afterSignOutUrl="/" appearance={userButtonAppearance} />
         </div>
       </header>
