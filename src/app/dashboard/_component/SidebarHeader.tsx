@@ -47,7 +47,7 @@ const SidebarHeader = () => {
   const userButtonAppearance = {
     elements: {
       userButtonAvatarBox: "w-10 h-10",
-      userButtonPopoverCard: "bg-blue-100", // Custom background 
+      userButtonPopoverCard: "bg-blue-100", // Custom  
       userButtonPopoverActionButton: "text-red-600", // Custom text color for action buttons
     },
   };
