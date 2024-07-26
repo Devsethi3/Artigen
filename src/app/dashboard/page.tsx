@@ -122,7 +122,7 @@ const DashboardHomePage = () => {
 
       setTotalChatbotInteractions(chatHistory.length / 2);
 
-      // Prepare data for the graph
+      // Prepare data for the 
       const interactionsByDate = results.reduce((acc, result) => {
         const date = moment(result.createdAt).format("YYYY-MM-DD");
         acc[date] = (acc[date] || 0) + 1;
