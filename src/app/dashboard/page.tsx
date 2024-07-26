@@ -121,8 +121,7 @@ const DashboardHomePage = () => {
       });
 
       setTotalChatbotInteractions(chatHistory.length / 2);
-
-      //    
+  
       const interactionsByDate = results.reduce((acc, result) => {
         const date = moment(result.createdAt).format("YYYY-MM-DD");
         acc[date] = (acc[date] || 0) + 1;
