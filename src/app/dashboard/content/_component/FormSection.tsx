@@ -45,7 +45,7 @@ const FormSection: React.FC<FormSectionProps> = ({
       required: item.required,
       onChange: handleInputChange,
       value: formData[item.name] || "",
-      placeholder: item.placeholder || "", // 
+      placeholder: item.placeholder || "",
       className: "w-full",
     };
 
