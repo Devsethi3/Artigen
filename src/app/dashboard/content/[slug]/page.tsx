@@ -58,7 +58,7 @@ const CreatePage = ({ params }: CreatePageProps) => {
       const selectedPrompt = selectedTemplate?.aiPrompt || "";
       const finalAIPrompt = `${JSON.stringify(formData)}, ${selectedPrompt}`;
 
-      // Here we're calling the 
+      // Here we're calling 
       const result = await chatSession.sendMessage(finalAIPrompt);
       const responseText = await result.response.text();
 
