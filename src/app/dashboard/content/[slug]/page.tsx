@@ -64,7 +64,7 @@ const CreatePage = ({ params }: CreatePageProps) => {
       // Update the
       setAiResult(responseText);
 
-      // Saving Data in DB
+      // Saving Data in
       await saveInDatabase(
         formData,
         selectedTemplate?.slug || "",
