@@ -61,7 +61,6 @@ const CreatePage = ({ params }: CreatePageProps) => {
       const result = await chatSession.sendMessage(finalAIPrompt);
       const responseText = await result.response.text();
 
-      //
       setAiResult(responseText);
 
       // Saving Data
