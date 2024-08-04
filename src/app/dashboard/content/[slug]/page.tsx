@@ -69,7 +69,7 @@ const CreatePage = ({ params }: CreatePageProps) => {
         responseText
       );
 
-      // Update total
+      // Update
       setTotalUsage((prev: any) => prev + responseText.length);
     } catch (error) {
       console.error("Error generating AI content:", error);
