@@ -4,7 +4,7 @@
  * $ npm install @google/generative-ai
  *
  * See the getting started guide for more information
- * https://ai.google.dev/
+ * https://ai.google.dev
  */
 
 const {
