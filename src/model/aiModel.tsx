@@ -3,7 +3,7 @@
  *
  * $ npm install @google/generative-ai
  *
- * See the getting started
+ * See the getting
  *
  */
 
